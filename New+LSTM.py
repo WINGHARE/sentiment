@@ -264,7 +264,7 @@ ax.set_xticklabels([''] + labels)
 ax.set_yticklabels([''] + labels)
 ax.set_xlabel('Ground truth')
 ax.set_ylabel('Predicted')
-plt.savefig(os.path.join('workspace',str(argvs[1])+'.jpg'))
+plt.savefig(os.path.join('figures',str(argvs[1])+'.jpg'))
 plt.show()
 plt.close()
 
