@@ -1,0 +1,7 @@
+Using TensorFlow backend.
+/usr/local/lib/python2.7/dist-packages/keras/preprocessing/text.py:90: UserWarning: The `nb_words` argument in `Tokenizer` has been renamed `num_words`.
+  warnings.warn('The `nb_words` argument in `Tokenizer` '
+Traceback (most recent call last):
+  File "New+LSTM.py", line 132, in <module>
+    model.add(GRU(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
+NameError: name 'GRU' is not defined
