@@ -34,8 +34,13 @@ from keras.models import Sequential
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 from keras.utils.np_utils import to_categorical
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+
 
 argvs= sys.argv
+
+CID = sys.argv[1]
 
 
 # In[2]:
@@ -105,7 +110,7 @@ X3 = np.asarray(X3)
 
 
 def precision(y_true, y_pred):
-    # Calculates the precision
+    #Calculates the precision
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
     precision = true_positives / (predicted_positives + K.epsilon())
@@ -118,6 +123,11 @@ def recall(y_true, y_pred):
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
     recall = true_positives / (possible_positives + K.epsilon())
     return recall
+
+def precision1(y_true,y_pred):
+    return precision_score(y_true,y_pred)
+def recall1(y_true,y_pred):
+    return recall_score(y_true,y_pred)
 
 
 
@@ -186,7 +196,7 @@ class TestCallback(Callback):
         loss, acc, recall,pre = self.model.evaluate(x, y, verbose=0)
         print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
 batch_size = 32
-checkpointer = ModelCheckpoint(filepath='/tmp/weights.hdf5', verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath=os.path.join('tmp','weights_'+CID+'.hdf5'), verbose=1, save_best_only=True)
 model.fit(X_train, Y_train, nb_epoch = 10, batch_size=batch_size, verbose = 1,validation_data=(X_test, Y_test), callbacks=[checkpointer])
 #callbacks=[TestCallback(X_test, Y_test),checkpointer]
 
@@ -216,9 +226,11 @@ model.add(GRU(512, return_sequences=False, dropout=0.2))
 #model.add(Embedding(max_fatures, 512,input_length = X.shape[1], dropout=0.2))
 #model.add(LSTM(512, dropout_U=0.2, dropout_W=0.2))
 model.add(Dense(2,activation='softmax'))
-model.load_weights("/tmp/weights.hdf5")
+model.load_weights(filepath=os.path.join('tmp','weights_'+CID+'.hdf5'))
 model.compile(loss = 'categorical_crossentropy', optimizer='adam',metrics=['accuracy',recall,precision])
 print(model.summary())
+model.save_weights(filepath=os.path.join('tmp','weights_'+CID+'.hdf5'))
+
 
 
 # In[19]:
