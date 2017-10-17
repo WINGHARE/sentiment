@@ -42,12 +42,8 @@ argvs= sys.argv
 
 
 data = pd.read_csv(os.path.join('data','01.csv'),encoding = "ISO-8859-1")
-
-#data = pd.read_csv(os.path.join('data','01.csv'),encoding = "UTF-8")
-
 text = data['text']
 sentiment = data['target']
-data.head()
 
 
 # In[3]:
@@ -81,8 +77,6 @@ X2 = tokenizer.texts_to_matrix(text_list,mode="tfidf")
 # In[6]:
 
 
-for i in range(0,len(X2[0])):
-    print(X2[0][i])
 
 
 # In[7]:
@@ -90,19 +84,19 @@ for i in range(0,len(X2[0])):
 
 X3 = [np.reshape(X2[i], (-1, 20))for i in range(0,len(X2))]
 X3 = np.asarray(X3)
-print(X3.shape)
+#print(X3.shape)
 
 
 # In[8]:
 
 
-X2.shape
+#X2.shape
 
 
 # In[9]:
 
 
-X.shape
+#X.shape
 
 
 # There are 220 postitive text and 563 negative text
@@ -128,10 +122,10 @@ def recall(y_true, y_pred):
 
 
 model = Sequential()
-model.add(LSTM(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
-#model.add(GRU(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
-#model.add(GRU(512, return_sequences=False, dropout=0.2))
-model.add(LSTM(512, return_sequences=False, dropout=0.2))
+#model.add(LSTM(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
+model.add(GRU(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
+model.add(GRU(512, return_sequences=False, dropout=0.2))
+#model.add(LSTM(512, return_sequences=False, dropout=0.2))
 
 #model.add(Embedding(max_fatures, 512,input_length = X.shape[1], dropout=0.2))
 #model.add(LSTM(512, dropout_U=0.2, dropout_W=0.2))
@@ -169,7 +163,7 @@ for i in range(0,len(Y)):
 Y2 = np.asarray(Y2)
 Y_train= Y2[:600]
 Y_test = Y2[600:]
-print(Y_test.shape)
+#print(Y_test.shape)
 
 
 # In[14]:
@@ -215,8 +209,10 @@ print(newData.shape)
 
 
 model = Sequential()
-model.add(LSTM(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
-model.add(LSTM(512, return_sequences=False, dropout=0.2))
+#model.add(LSTM(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
+#model.add(LSTM(512, return_sequences=False, dropout=0.2))
+model.add(GRU(512, return_sequences=True, input_shape=X3[0].shape, dropout=0.2, recurrent_dropout=0.2))
+model.add(GRU(512, return_sequences=False, dropout=0.2))
 #model.add(Embedding(max_fatures, 512,input_length = X.shape[1], dropout=0.2))
 #model.add(LSTM(512, dropout_U=0.2, dropout_W=0.2))
 model.add(Dense(2,activation='softmax'))
