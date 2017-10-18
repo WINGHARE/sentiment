@@ -191,7 +191,7 @@ def main():
     plt.switch_backend('agg')
     mp.use('Agg')
 
-    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('roc', str(argvs[1]) + '.jpg'))
+    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + '.jpg'))
 
     cm = [[npredict / ncount, 1 - npredict / ncount],
     [ppredict / pcount, 1 - ppredict / pcount]]
