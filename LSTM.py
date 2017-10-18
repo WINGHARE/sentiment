@@ -79,8 +79,8 @@ def get_data():
         (lambda x: re.sub('[^a-zA-z0-9\s]', '', x)))
     max_fatures = 2000
     tokenizer = Tokenizer(num_words=max_fatures, split=' ')
-    text_list = [s.encode('ascii') for s in text.values]
-    tokenizer.fit_on_texts([s.encode('ascii') for s in text_list])
+    text_list = [str(s.encode('ascii')) for s in text.values]
+    tokenizer.fit_on_texts(text_list)
     X = tokenizer.texts_to_sequences(text_list)
     X = pad_sequences(X)
     X2 = tokenizer.texts_to_matrix(text_list, mode="tfidf")
