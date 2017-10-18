@@ -115,7 +115,7 @@ def main():
         loss='categorical_crossentropy',
         optimizer='adam',
         #metrics=['accuracy', recall, precision])
-        metrics=['accuracy', 'recall', 'precision','f1score'])
+        metrics=['accuracy', recall, precision])
     print(model.summary())
 
     batch_size = 32
@@ -150,7 +150,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', 'recall', 'precision','f1score'])
+        metrics=['accuracy', recall, precision])
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
