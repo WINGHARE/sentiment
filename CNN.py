@@ -54,14 +54,6 @@ def recall(y_true, y_pred):
     recall = true_positives / (possible_positives + K.epsilon())
     return recall
 
-
-def precision1(y_true, y_pred):
-    return precision_score(y_true, y_pred)
-
-
-def recall1(y_true, y_pred):
-    return recall_score(y_true, y_pred)
-
 def get_data():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
@@ -114,7 +106,6 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        #metrics=['accuracy', recall, precision])
         metrics=['accuracy', recall, precision])
     print(model.summary())
 
