@@ -83,7 +83,7 @@ def get_data():
     Y = np.asarray(Y)
 
     ohenc= OneHotEncoder()
-    Y2 = ohenc.fit_transform(Y).toarray()
+    Y2 = ohenc.fit_transform(Y.reshape(-1,1)).toarray()
 
     X_train,X_test,Y_train,Y_test = train_test_split(X3,Y2,test_size=0.3)
     return X_train,X_test,Y_train,Y_test,X,X2,X3
