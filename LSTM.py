@@ -38,6 +38,9 @@ from sklearn.preprocessing import OneHotEncoder
 
 argvs = sys.argv
 
+print (argvs)
+print ("##########")
+
 CID = sys.argv[1]
 
 def precision(y_true, y_pred):
@@ -153,7 +156,7 @@ def main():
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
-    y_score = model.predict_proba(x_test)
+    y_score = model.predict_proba(X_test)
 
     pcount, ncount, ppredict, npredict = 0, 0, 0, 0
     for x in range(len(newData)):
