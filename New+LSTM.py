@@ -40,7 +40,7 @@ from sklearn.metrics import precision_score
 
 argvs= sys.argv
 
-CID = sys.argv[1]
+CID = "test"
 
 
 # In[2]:
@@ -64,11 +64,11 @@ data['text'] = data['text'].apply(lambda x: x.lower())
 data['text'] = data['text'].apply((lambda x: re.sub('[^a-zA-z0-9\s]','',x)))
 
 max_fatures = 2000
-tokenizer = Tokenizer(nb_words=max_fatures, split=' ')
+tokenizer = Tokenizer(num_words=max_fatures, split=' ')
 
-text_list = [s.encode('ascii') for s in text.values]
+text_list = [str(s.encode('ascii')) for s in text.values]
 
-tokenizer.fit_on_texts([s.encode('ascii') for s in text_list])
+tokenizer.fit_on_texts(text_list)
 X = tokenizer.texts_to_sequences(text_list)
 X = pad_sequences(X)
 
@@ -199,7 +199,7 @@ class TestCallback(Callback):
         print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
 batch_size = 32
 checkpointer = ModelCheckpoint(filepath=os.path.join('tmp','weights_'+CID+'.hdf5'), verbose=1, save_best_only=True)
-model.fit(X_train, Y_train, nb_epoch = 10, batch_size=batch_size, verbose = 1,validation_data=(X_test, Y_test), callbacks=[checkpointer])
+model.fit(X_train, Y_train, epochs = 10, batch_size=batch_size, verbose = 1,validation_data=(X_test, Y_test), callbacks=[checkpointer])
 #callbacks=[TestCallback(X_test, Y_test),checkpointer]
 
 
@@ -273,7 +273,7 @@ ax.set_xticklabels([''] + labels)
 ax.set_yticklabels([''] + labels)
 ax.set_xlabel('Ground truth')
 ax.set_ylabel('Predicted')
-plt.savefig(os.path.join('figures',str(argvs[1])+'.jpg'))
+plt.savefig(os.path.join('figures',CID+'.jpg'))
 plt.show()
 plt.close()
 
