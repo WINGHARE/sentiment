@@ -1,2 +1,2 @@
 #!/bin/bash
-python New+LSTM.py  $@ $(date +%s)
+python LSTM.py  -c $@ -d $(date +%s)
