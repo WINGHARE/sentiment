@@ -95,7 +95,7 @@ class TestCallback(Callback):
     def on_epoch_end(self, epoch, logs={}):
         x = self.Xdata
         y = self.Ydata
-        loss, acc, recall, pre = self.model.evaluate(x, y, verbose=0)
+        loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
         print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
 
 def main():
@@ -113,7 +113,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision,f1score])
+        metrics=['accuracy', recall, precision, f1score])
     print(model.summary())
 
     batch_size = 32

@@ -18,6 +18,7 @@ import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
+import roc as roc
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import fbeta_score
 from sklearn.model_selection import train_test_split
@@ -113,7 +114,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision,f1score])
+        metrics=['accuracy', recall, precision, f1score])
     print(model.summary())
 
     batch_size = 32
@@ -152,6 +153,7 @@ def main():
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
+    y_score = model.predict_proba(x_test)
 
     pcount, ncount, ppredict, npredict = 0, 0, 0, 0
     for x in range(len(newData)):
@@ -174,6 +176,8 @@ def main():
 
     plt.switch_backend('agg')
     mp.use('Agg')
+
+    roc.roc_plot(y_test,y_score,2,filepath=os.path.join('roc', str(argvs[1]) + '.jpg'))
 
     cm = [[npredict / ncount, 1 - npredict / ncount],
     [ppredict / pcount, 1 - ppredict / pcount]]
