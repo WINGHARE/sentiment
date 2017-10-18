@@ -161,6 +161,8 @@ def main():
 
     CID = opts.cluster
 
+    if(opts.load!='none'): CID = opts.load
+
     X_train,X_test,Y_train,Y_test,X,X2,X3 = get_data()
     
     model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile=opts.load)
@@ -191,7 +193,7 @@ def main():
     plt.switch_backend('agg')
     mp.use('Agg')
 
-    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + '.jpg'))
+    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + 'roc.jpg'))
 
     cm = [[npredict / ncount, 1 - npredict / ncount],
     [ppredict / pcount, 1 - ppredict / pcount]]
@@ -204,7 +206,7 @@ def main():
     ax.set_yticklabels([''] + labels)
     ax.set_xlabel('Ground truth')
     ax.set_ylabel('Predicted')
-    plt.savefig(os.path.join('figures', str(argvs[1]) + '.jpg'))
+    plt.savefig(os.path.join('figures', CID + 'what.jpg'))
     plt.show()
     plt.close()
     return
