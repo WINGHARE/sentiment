@@ -14,6 +14,8 @@ import re
 import sys
 import time
 
+
+
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
@@ -35,8 +37,12 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+from optparse import OptionParser
+
 
 argvs = sys.argv
+
+opts, args = {}, []
 
 print (argvs)
 print ("##########")
