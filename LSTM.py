@@ -162,7 +162,7 @@ def main():
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
-    y_score = model.predict_proba(X_test)
+    Y_score = model.predict_proba(X_test)
 
     pcount, ncount, ppredict, npredict = 0, 0, 0, 0
     for x in range(len(newData)):
@@ -186,7 +186,7 @@ def main():
     plt.switch_backend('agg')
     mp.use('Agg')
 
-    roc.roc_plot(y_test,y_score,2,filepath=os.path.join('roc', str(argvs[1]) + '.jpg'))
+    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('roc', str(argvs[1]) + '.jpg'))
 
     cm = [[npredict / ncount, 1 - npredict / ncount],
     [ppredict / pcount, 1 - ppredict / pcount]]
