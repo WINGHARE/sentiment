@@ -47,7 +47,6 @@ opts, args = {}, []
 print (argvs)
 print ("##########")
 
-CID = sys.argv[1]
 
 def precision(y_true, y_pred):
     #Calculates the precision
@@ -108,9 +107,8 @@ class TestCallback(Callback):
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
         print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
 
-def main():
 
-    X_train,X_test,Y_train,Y_test,X,X2,X3 = get_data()
+def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
     model = Sequential()
     model.add(
         GRU(512,
@@ -120,47 +118,54 @@ def main():
         recurrent_dropout=0.2))   
     model.add(GRU(512, return_sequences=False, dropout=0.2))
     model.add(Dense(2, activation='softmax'))
-    model.compile(
-        loss='categorical_crossentropy',
-        optimizer='adam',
-        metrics=['accuracy', recall, precision, f1score])
-    print(model.summary())
 
-    batch_size = 32
+    if(fromfile == 'none'):
+        model.compile(
+            loss='categorical_crossentropy',
+            optimizer='adam',
+            metrics=['accuracy', recall, precision, f1score])
+        print(model.summary())
 
-    checkpointer = ModelCheckpoint(
-        filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'),
-        verbose=1,
-        save_best_only=True)
+        batch_size = 32
+
+        checkpointer = ModelCheckpoint(
+            filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'),
+            verbose=1,
+            save_best_only=True)
     
-    model.fit(
-        X_train,
-        Y_train,
-        epochs=10,
-        batch_size=batch_size,
-        verbose=1,
-        validation_data=(X_test, Y_test),
-        callbacks=[checkpointer])
+        model.fit(
+            X_train,
+            Y_train,
+            epochs=10,
+            batch_size=batch_size,
+            verbose=1,
+            validation_data=(X_test, Y_test),
+            callbacks=[checkpointer])
+
+        model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
+        return model 
     
+    else :
+        filepath=os.path.join('tmp', fromfile)
+        model.load_weights(filepath=filepath)
+        model.compile(
+            loss='categorical_crossentropy',
+            optimizer='adam',
+            metrics=['accuracy', recall, precision,f1score])
+        print(model.summary())
+        return model 
+
+    return model 
+
+def main():
+
+    CID = opts.cluster
+
+    X_train,X_test,Y_train,Y_test,X,X2,X3 = get_data()
+    
+    model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile=opts.load)
+        
     newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
-
-    model = Sequential()
-    model.add(
-        GRU(512,
-        return_sequences=True,
-        input_shape=X3[0].shape,
-        dropout=0.2,
-        recurrent_dropout=0.2))
-    
-    model.add(GRU(512, return_sequences=False, dropout=0.2))
-    model.add(Dense(2, activation='softmax'))
-    model.load_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-    model.compile(
-        loss='categorical_crossentropy',
-        optimizer='adam',
-        metrics=['accuracy', recall, precision,f1score])
-    print(model.summary())
-    model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
     Y_score = model.predict_proba(X_test)
 
@@ -206,5 +211,16 @@ def main():
 
 
 if __name__ == "__main__":
+
+    op = OptionParser()
+    op.add_option('-c', '--cluster', action='store', type= 'string' ,dest='cluster', help='indicate the clusterid')
+    op.add_option('-d', '--date', action='store', type= 'string' ,dest='date', help='indicate the date')
+    op.add_option('-l', '--load', default='none',action='store', type= 'string' ,dest='load', help='load weight form file')
+    (opts, args) = op.parse_args()
+    if len(args) > 0:
+        op.print_help()
+        op.error('Please input options instead of arguments.')
+        exit(1)
+
     main()
 
