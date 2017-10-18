@@ -70,7 +70,7 @@ def get_data():
     data['text'] = data['text'].apply(
         (lambda x: re.sub('[^a-zA-z0-9\s]', '', x)))
     max_fatures = 2000
-    tokenizer = Tokenizer(nb_words=max_fatures, split=' ')
+    tokenizer = Tokenizer(num_words=max_fatures, split=' ')
     text_list = [s.encode('ascii') for s in text.values]
     tokenizer.fit_on_texts([s.encode('ascii') for s in text_list])
     X = tokenizer.texts_to_sequences(text_list)
@@ -85,7 +85,7 @@ def get_data():
     ohenc= OneHotEncoder()
     Y2 = ohenc.fit_transform(Y.reshape(-1,1)).toarray()
 
-    X_train,X_test,Y_train,Y_test = train_test_split(X3,Y2,test_size=0.3)
+    X_train,X_test,Y_train,Y_test = train_test_split(X3,Y2,test_size=0.25)
     return X_train,X_test,Y_train,Y_test,X,X2,X3
 
 class TestCallback(Callback):
@@ -114,7 +114,8 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision])
+        #metrics=['accuracy', recall, precision])
+        metrics=['accuracy', 'recall', 'precision','f1score'])
     print(model.summary())
 
     batch_size = 32
@@ -127,7 +128,7 @@ def main():
     model.fit(
         X_train,
         Y_train,
-        nb_epoch=10,
+        epochs=10,
         batch_size=batch_size,
         verbose=1,
         validation_data=(X_test, Y_test),
@@ -149,7 +150,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision])
+        metrics=['accuracy', 'recall', 'precision','f1score'])
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
