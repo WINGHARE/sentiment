@@ -161,6 +161,8 @@ X = X3
 
 Y = [sentiment[i]for i in range(0,len(sentiment))]
 Y = np.asarray(Y)
+
+#
 X, Y = shuffle(X, Y)
 X_train = X[:600]
 X_test = X[600:]
@@ -255,7 +257,7 @@ print("False 1:\t", 1-ppredict/pcount)
 print("True 0:\t", npredict/ncount)
 print("False 0:\t", 1-npredict/ncount)
 
-
+plt.switch_backend('agg')
 mp.use('Agg')
 
 
@@ -263,7 +265,6 @@ cm =  [[npredict/ncount, 1-npredict/ncount],
        [ppredict/pcount, 1-ppredict/pcount]]
 labels = ['0', '1']
 
-plt.switch_backend('agg')
 
 fig, ax = plt.subplots()
 h = ax.matshow(cm)

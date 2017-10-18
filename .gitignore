@@ -9,8 +9,8 @@
  
 # ignore all files in the build/ directory
 workspace/
-
 figures/
+tmp/
 
  
 # ignore doc/notes.txt, but not doc/server/arch.txt
