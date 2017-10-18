@@ -54,6 +54,13 @@ def recall(y_true, y_pred):
     recall = true_positives / (possible_positives + K.epsilon())
     return recall
 
+def f1score(y_true, y_pred):
+    r = recall(y_true,y_pred)
+    p = precision(y_true,y_pred)
+    return 2*p*r/(p+r)
+
+
+
 def get_data():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
@@ -106,7 +113,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision])
+        metrics=['accuracy', recall, precision,f1score])
     print(model.summary())
 
     batch_size = 32
@@ -141,7 +148,7 @@ def main():
     model.compile(
         loss='categorical_crossentropy',
         optimizer='adam',
-        metrics=['accuracy', recall, precision])
+        metrics=['accuracy', recall, precision,f1score])
     print(model.summary())
     model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
 
