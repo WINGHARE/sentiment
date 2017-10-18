@@ -134,7 +134,7 @@ def main():
         validation_data=(X_test, Y_test),
         callbacks=[checkpointer])
     
-    newData = X_test.reshape(183, 1, 100, 20)
+    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     model = Sequential()
     model.add(
