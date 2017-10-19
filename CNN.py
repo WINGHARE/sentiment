@@ -88,6 +88,7 @@ def get_data():
     X2 = tokenizer.texts_to_matrix(text_list, mode="tfidf")
     X3 = [np.reshape(X2[i], (-1, 20)) for i in range(0, len(X2))]
     X3 = np.asarray(X3)
+    X3 = X3.reshape(X3.shape[0],X3.shape[1],X3.shape[2],1)
 
     Y = [sentiment[i] for i in range(0, len(sentiment))]
     Y = np.asarray(Y)
