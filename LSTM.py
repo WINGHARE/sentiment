@@ -38,6 +38,8 @@ from sklearn.metrics import precision_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from optparse import OptionParser
+from sklearn.metrics import classification_report
+
 
 
 argvs = sys.argv
@@ -68,8 +70,9 @@ def f1score(y_true, y_pred):
     p = precision(y_true,y_pred)
     return 2*p*r/(p+r)
 
-
-
+def decode_y(y,features=np.array([0,1])):
+    return np.dot(y,features).astype(int)
+    
 def get_data():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
@@ -94,7 +97,7 @@ def get_data():
     Y2 = ohenc.fit_transform(Y.reshape(-1,1)).toarray()
 
     X_train,X_test,Y_train,Y_test = train_test_split(X3,Y2,test_size=0.25)
-    return X_train,X_test,Y_train,Y_test,X,X2,X3
+    return X_train,X_test,Y_train,Y_test,X,X2,X3,ohenc
 
 class TestCallback(Callback):
     def __init__(self, test_data1, test_data2):
@@ -164,7 +167,7 @@ def main():
 
     if(opts.load!='none'): CID = opts.load
 
-    X_train,X_test,Y_train,Y_test,X,X2,X3 = get_data()
+    X_train,X_test,Y_train,Y_test,X,X2,X3,enc = get_data()
     
     model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile=opts.load)
         
@@ -172,48 +175,21 @@ def main():
 
     Y_score = model.predict_proba(X_test)
 
-    pcount, ncount, ppredict, npredict = 0, 0, 0, 0
-    for x in range(len(newData)):
-        result = model.predict(newData[x])[0]
-        if np.argmax(result) == np.argmax(Y_test[x]):
-            if np.argmax(Y_test[x]) == 0:
-                ppredict += 1
-            else:
-                npredict += 1
-
-        if np.argmax(Y_test[x]) == 0:
-            pcount += 1
-        else:
-            ncount += 1
-
-    print("True 1:\t", ppredict / pcount)
-    print("False 1:\t", 1 - ppredict / pcount)
-    print("True 0:\t", npredict / ncount)
-    print("False 0:\t", 1 - npredict / ncount)
-
-    plt.switch_backend('agg')
-    mp.use('Agg')
-
     roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + 'roc.jpg'))
 
-    cm = [[npredict / ncount, 1 - npredict / ncount],
-    [ppredict / pcount, 1 - ppredict / pcount]]
-    labels = ['0', '1']
+    Y_de = decode_y(Y_test,features=enc.active_features_)
+    Y_pred = model.predict(X_test)
+    Y_depred = decode_y(Y_pred,features=enc.active_features_)
+    print(classification_report(Y_de,Y_depred))
 
-    fig, ax = plt.subplots()
-    h = ax.matshow(cm)
-    fig.colorbar(h)
-    ax.set_xticklabels([''] + labels)
-    ax.set_yticklabels([''] + labels)
-    ax.set_xlabel('Ground truth')
-    ax.set_ylabel('Predicted')
-    plt.savefig(os.path.join('figures', CID + 'what.jpg'))
-    plt.show()
-    plt.close()
     return
 
 
 if __name__ == "__main__":
+
+    
+    plt.switch_backend('agg')
+    mp.use('Agg')
 
     op = OptionParser()
     op.add_option('-c', '--cluster', action='store', type= 'string' ,dest='cluster', help='indicate the clusterid')
