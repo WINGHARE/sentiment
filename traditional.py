@@ -28,6 +28,9 @@ from sklearn.preprocessing import OneHotEncoder
 
 import roc as roc
 
+plt.switch_backend('agg')
+matplotlib.use('Agg')
+
 
 data=pd.read_csv(os.path.join('data','01.csv'),encoding = "ISO-8859-1");
 
