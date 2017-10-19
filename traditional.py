@@ -4,6 +4,8 @@ import sys
 import time
 
 import matplotlib.pyplot as plt
+import matplotlib as mp
+
 import nltk
 import numpy as np
 import pandas as pd
