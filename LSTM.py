@@ -120,7 +120,7 @@ def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
         dropout=0.2,
         recurrent_dropout=0.2))   
     model.add(LSTM(512, return_sequences=False, dropout=0.2))
-    model.add(Dense(256, activation='relu'))
+    model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
 
     if(fromfile == 'none'):
