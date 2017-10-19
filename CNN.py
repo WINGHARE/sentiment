@@ -124,7 +124,7 @@ def bulid_model(X_train,
     model = Sequential()
     model.add(
         Conv2D(
-            32,
+            128,
             kernel_size=(5, 5),
             strides=(1, 1),
             activation='relu',
