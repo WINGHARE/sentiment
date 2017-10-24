@@ -34,12 +34,12 @@ plt.switch_backend('agg')
 mp.use('Agg')
 
 
-data=pd.read_csv(os.path.join('data','01.csv'),encoding = "ISO-8859-1");
+data=pd.read_csv(os.path.join('data','01.csv'),encoding = "ISO-8859-1")
 
 
-data['text'] = data['text'].map(lambda x: x.lower());
-target = data.as_matrix(['target']);
-text = data.as_matrix(['text']);
+data['text'] = data['text'].map(lambda x: x.lower())
+target = data.as_matrix(['target'])
+text = data.as_matrix(['text'])
 
 train_data,test_data,train_target,test_target = train_test_split( 
 text.ravel(), target.ravel(), test_size=0.40, random_state=42)
@@ -77,7 +77,7 @@ def tokenize(text):
 clf2 = Pipeline([('vect', CountVectorizer(tokenizer=tokenize,ngram_range=(1, 2))),
                        ('tfidf', TfidfTransformer()),
                       ('clf', SGDClassifier(loss='log',random_state=42,shuffle=True, alpha=0.0001*0.75, penalty='l1',
-                                            n_iter=20 )),
+                                            max_iter=20 )),
  ])
 
 _ = clf2.fit(train_data, train_target)
