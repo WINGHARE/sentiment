@@ -10,8 +10,9 @@
 # In[1]:
 
 import sys
+import os
 
-import matplotlib as mp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
@@ -30,6 +31,21 @@ opts, args = {}, []
 print(argvs)
 print("##########")
 
+def plot_filters(layer,x,y):
+    """plote the filter after the conv layer"""
+    filters = layer.get_weights()[0]
+    #filters = filters[:,:,:,:8]
+    fig = plt.figure()
+    for j in range(0,filters.shape[3]):
+        ax = fig.add_subplot(y,x,j+1)
+        ax.matshow(filters[:,:,0,j],cmap=matplotlib.cm.binary) # shaape [5,5,1,128]
+        plt.xticks(np.array([]))
+        plt.yticks(np.array([]))
+    plt.tight_layout()
+    plt.show()
+    plt.savefig(os.path.join('figures', 'tradSGD' + 'anma.jpg'))
+    return plt
+
 def main():
 
     CID = opts.cluster
@@ -39,7 +55,7 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = CNN.get_data()
 
     model = CNN.bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8212_0_.hdf5')
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8229_0_.hdf5')
 
     model.pop()
     model.pop()
@@ -51,14 +67,16 @@ def main():
 
     print (l.shape)
 
+    plot_filters(model.layers[0],16,8)
+
 
     return
 
 
 if __name__ == "__main__":
 
-    plt.switch_backend('agg')
-    mp.use('Agg')
+    #plt.switch_backend('agg')
+    #matplotlib.use('Agg')
 
     op = OptionParser()
     op.add_option(
