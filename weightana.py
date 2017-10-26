@@ -12,7 +12,7 @@
 import sys
 import os
 
-import matplotlib
+import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
@@ -31,19 +31,20 @@ opts, args = {}, []
 print(argvs)
 print("##########")
 
-def plot_filters(layer,x,y):
+def plot_filters(layer,x,y,filepath='filters.jpg'):
     """plote the filter after the conv layer"""
     filters = layer.get_weights()[0]
     #filters = filters[:,:,:,:8]
     fig = plt.figure()
     for j in range(0,filters.shape[3]):
         ax = fig.add_subplot(y,x,j+1)
-        ax.matshow(filters[:,:,0,j],cmap=matplotlib.cm.binary) # shaape [5,5,1,128]
+        ax.matshow(filters[:,:,0,j],cmap=mp.cm.binary) # shaape [5,5,1,128]
         plt.xticks(np.array([]))
         plt.yticks(np.array([]))
     plt.tight_layout()
     plt.show()
-    plt.savefig(os.path.join('figures', 'tradSGD' + 'anma.jpg'))
+    plt.savefig(filepath)
+    plt.close()
     return plt
 
 def main():
@@ -67,7 +68,7 @@ def main():
 
     print (l.shape)
 
-    plot_filters(model.layers[0],16,8)
+    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8229.jpg'))
 
 
     return
@@ -75,8 +76,8 @@ def main():
 
 if __name__ == "__main__":
 
-    #plt.switch_backend('agg')
-    #matplotlib.use('Agg')
+    plt.switch_backend('agg')
+    mp.use('Agg')
 
     op = OptionParser()
     op.add_option(
