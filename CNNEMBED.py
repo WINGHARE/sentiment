@@ -122,14 +122,17 @@ def bulid_model(X_train,
                 CID,
                 fromfile='none'):
     model = Sequential()
+    model.add(Embedding(2000, 32,input_length = X.shape[1], dropout=0.2))
+
     model.add(
         Conv2D(
             128,
             kernel_size=(5, 5),
             strides=(1, 1),
             padding='same',
-            activation='relu',
-            input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
+            activation='relu'#,
+            #input_shape=(X3[0].shape[0],X3[0].shape[1],1)
+            ))
     model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
