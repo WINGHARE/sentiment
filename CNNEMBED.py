@@ -26,7 +26,7 @@ from sklearn.utils import shuffle
 
 import keras.backend as K
 from keras.callbacks import Callback, ModelCheckpoint
-from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D,Flatten
+from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D,Flatten,Reshape
 from keras.models import Sequential
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
@@ -122,8 +122,8 @@ def bulid_model(X_train,
                 CID,
                 fromfile='none'):
     model = Sequential()
-    model.add(Embedding(2000, 32,input_length = X.shape[1], dropout=0.2))
-
+    model.add(Embedding(2000, 32,input_length = X.shape[1]))
+    model.add(Reshape((X.shape[1],32,1),input_shape=(X.shape[1],32)))
     model.add(
         Conv2D(
             128,
