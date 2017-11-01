@@ -26,7 +26,7 @@ from sklearn.utils import shuffle
 
 import keras.backend as K
 from keras.callbacks import Callback, ModelCheckpoint
-from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D,Flatten,Reshape
+from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D, Flatten, Reshape
 from keras.models import Sequential
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
@@ -88,7 +88,7 @@ def get_data():
     X2 = tokenizer.texts_to_matrix(text_list, mode="tfidf")
     X3 = [np.reshape(X2[i], (-1, 20)) for i in range(0, len(X2))]
     X3 = np.asarray(X3)
-    X3 = X3.reshape(X3.shape[0],X3.shape[1],X3.shape[2],1)
+    X3 = X3.reshape(X3.shape[0], X3.shape[1], X3.shape[2], 1)
 
     Y = [sentiment[i] for i in range(0, len(sentiment))]
     Y = np.asarray(Y)
@@ -122,17 +122,17 @@ def bulid_model(X_train,
                 CID,
                 fromfile='none'):
     model = Sequential()
-    model.add(Embedding(2000, 32,input_length = X.shape[1]))
-    model.add(Reshape((X.shape[1],32,1),input_shape=(X.shape[1],32)))
+    model.add(Embedding(2000, 32, input_length=X.shape[1]))
+    model.add(Reshape((X.shape[1], 32, 1), input_shape=(X.shape[1], 32)))
     model.add(
         Conv2D(
             128,
             kernel_size=(5, 5),
             strides=(1, 1),
             padding='same',
-            activation='relu'#,
+            activation='relu'  #,
             #input_shape=(X3[0].shape[0],X3[0].shape[1],1)
-            ))
+        ))
     model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
