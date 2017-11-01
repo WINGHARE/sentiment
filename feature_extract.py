@@ -82,7 +82,6 @@ def get_data2():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
     sentiment = data['target']
-    data.head()
     text = text.apply(lambda x: x.lower())  #lowercase
     text = text.apply((
         lambda x: re.sub(r'[?|$|&|*|%|@|(|)|~]', '', x)))  #remove punctuations

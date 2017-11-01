@@ -120,7 +120,7 @@ def bulid_model(X_train,
         model.fit(
             X_train,
             Y_train,
-            epochs=10,
+            epochs=30,
             batch_size=batch_size,
             verbose=1,
             validation_data=(X_test, Y_test),
