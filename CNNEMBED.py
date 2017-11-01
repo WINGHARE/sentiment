@@ -96,7 +96,7 @@ def get_data():
     ohenc = OneHotEncoder()
     Y2 = ohenc.fit_transform(Y.reshape(-1, 1)).toarray()
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=0.4)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y2, test_size=0.4)
     return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
 
 
@@ -189,7 +189,7 @@ def main():
     model = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
-    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    newData = X_test#.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
