@@ -3,7 +3,7 @@ import re
 
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 
 import keras.backend as K
@@ -11,20 +11,20 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.pipeline import Pipeline
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 import nltk
 
 words = set(nltk.corpus.words.words())
+stemmer = PorterStemmer()
 
 
 def removeNonEnglish(s):
     sen = s
-    print(" ".join(
-        w for w in nltk.wordpunct_tokenize(sen)
-        if w.lower() in words or not w.isalpha()))
     return " ".join(
         w for w in nltk.wordpunct_tokenize(sen)
         if w.lower() in words or not w.isalpha())
@@ -49,6 +49,17 @@ def lemmat(ss):
     sent2 = [lem.lemmatize(sent[i], 'v') for i in range(len(sent))]
     return " ".join(sent2)
 
+
+def stem_tokens(tokens, stemmer):
+    stemmed = []
+    for item in tokens:
+        stemmed.append(stemmer.stem(item))
+    return stemmed
+
+def poter_tokenize(text):
+    tokens = nltk.word_tokenize(text)
+    stems = stem_tokens(tokens, stemmer)
+    return " ".join(stems)
 
 def get_data():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
@@ -88,7 +99,7 @@ def get_data2():
     text = text.apply((
         lambda x: re.sub(r'[^a-zA-Z0-9 ]', '', x)))  #only numbers and alphabet
     text = text.apply(lambda x: removeStopWords(x))  #remove stopwords
-    text = text.apply(lambda x: lemmat(x))  #lemmatize the sentence
+    text = text.apply(lambda x: poter_tokenize(x))  #lemmatize the sentence
 
     text = text.apply(lambda x: removeNonEnglish(x))  #remove
 
@@ -111,3 +122,16 @@ def get_data2():
 
     X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=0.4)
     return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
+
+def get_data3():
+
+    return
+    
+
+def main():
+
+    
+
+    return 
+
+
