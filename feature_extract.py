@@ -32,6 +32,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import nltk
 
+words = set(nltk.corpus.words.words())
+
 def removeNonEnglish(s):
     sen = s
     print(" ".join(w for w in nltk.wordpunct_tokenize(sen) if w.lower() in words or not w.isalpha()))
