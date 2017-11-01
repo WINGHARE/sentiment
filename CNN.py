@@ -75,6 +75,7 @@ def lemmat(ss):
     sent = [lem.lemmatize(tokens[i],'n')for i in range(len(tokens))]
     sent2 = [lem.lemmatize(sent[i],'v')for i in range(len(sent))]
     return " ".join(sent2)
+
 def precision(y_true, y_pred):
     #Calculates the precision
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
