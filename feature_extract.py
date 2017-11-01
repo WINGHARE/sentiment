@@ -99,7 +99,7 @@ def get_data2():
     text = text.apply((
         lambda x: re.sub(r'[^a-zA-Z0-9 ]', '', x)))  #only numbers and alphabet
     text = text.apply(lambda x: removeStopWords(x))  #remove stopwords
-    text = text.apply(lambda x: poter_tokenize(x))  #lemmatize the sentence
+    text = text.apply(lambda x: lemmat(x))  #lemmatize the sentence
 
     text = text.apply(lambda x: removeNonEnglish(x))  #remove
 
@@ -124,7 +124,38 @@ def get_data2():
     return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
 
 def get_data3():
+    data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
+    text = data['text']
+    sentiment = data['target']
+    text = text.apply(lambda x: x.lower())  #lowercase
+    text = text.apply((
+        lambda x: re.sub(r'[?|$|&|*|%|@|(|)|~]', '', x)))  #remove punctuations
+    text = text.apply((
+        lambda x: re.sub(r'[^a-zA-Z0-9 ]', '', x)))  #only numbers and alphabet
+    text = text.apply(lambda x: removeStopWords(x))  #remove stopwords
+    text = text.apply(lambda x: poter_tokenize(x))  #lemmatize the sentence
 
+    text = text.apply(lambda x: removeNonEnglish(x))  #remove
+
+    max_fatures = 2000
+    tokenizer = Tokenizer(num_words=max_fatures, split=' ')
+    text_list = [str(s.encode('ascii')) for s in text.values]
+    tokenizer.fit_on_texts(text_list)
+    X = tokenizer.texts_to_sequences(text_list)
+    X = pad_sequences(X)
+    X2 = tokenizer.texts_to_matrix(text_list, mode="tfidf")
+    X3 = [np.reshape(X2[i], (-1, 20)) for i in range(0, len(X2))]
+    X3 = np.asarray(X3)
+    X3 = X3.reshape(X3.shape[0], X3.shape[1], X3.shape[2], 1)
+
+    Y = [sentiment[i] for i in range(0, len(sentiment))]
+    Y = np.asarray(Y)
+
+    ohenc = OneHotEncoder()
+    Y2 = ohenc.fit_transform(Y.reshape(-1, 1)).toarray()
+
+    X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=0.4)
+    return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
     return
     
 
