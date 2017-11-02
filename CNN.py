@@ -93,7 +93,7 @@ def bulid_model(X_train,
     model.add(
         Conv2D(
             128,
-            kernel_size=(5, 1),
+            kernel_size=(10, 2),
             strides=(1, 1),
             padding='same',
             activation='relu',
@@ -120,7 +120,7 @@ def bulid_model(X_train,
         model.fit(
             X_train,
             Y_train,
-            epochs=30,
+            epochs=15,
             batch_size=batch_size,
             verbose=1,
             validation_data=(X_test, Y_test),
