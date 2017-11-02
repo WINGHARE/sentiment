@@ -122,12 +122,12 @@ def bulid_model(X_train,
                 CID,
                 fromfile='none'):
     model = Sequential()
-    model.add(Embedding(2000, 16, input_length=X.shape[1]))
-    model.add(Reshape((X.shape[1], 16, 1), input_shape=(X.shape[1], 16)))
+    model.add(Embedding(2000, 32, input_length=X.shape[1]))
+    model.add(Reshape((X.shape[1], 32, 1), input_shape=(X.shape[1], 32)))
     model.add(
         Conv2D(
             128,
-            kernel_size=(16, 3),
+            kernel_size=(32, 3),
             strides=(1, 1),
             padding='same',
             activation='relu'  #,
