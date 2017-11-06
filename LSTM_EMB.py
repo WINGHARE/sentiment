@@ -91,8 +91,10 @@ def bulid_model(X_train,
                 fromfile='none'):
     model = Sequential()
     model.add(
-        Embedding(2000, 512, input_length=X.shape[1], dropout=0.2))
+        Embedding(2000, 32, input_length=X.shape[1], dropout=0.2))
     model.add(LSTM(512, dropout_U=0.2, dropout_W=0.2))
+    model.add(LSTM(512, return_sequences=False, dropout=0.2))
+
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
 
