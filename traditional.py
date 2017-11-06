@@ -25,6 +25,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import accuracy_score
 
 import roc as roc
 
@@ -97,6 +98,8 @@ print(metrics.classification_report(
     test_target,
     predicted,
 ))
+
+print(accuracy_score(test_target, predicted))
 """
 
 try SVC
@@ -111,12 +114,12 @@ clf5 = Pipeline([
         cache_size=200,
         class_weight=None,
         coef0=0.0,
+        probability=True,
         decision_function_shape=None,
         degree=1,
         gamma='auto',
         kernel='linear',
         max_iter=-1,
-        probability=False,
         random_state=None,
         shrinking=True,
         tol=0.001,
@@ -125,8 +128,11 @@ clf5 = Pipeline([
 
 _ = clf5.fit(train_data, train_target)
 predicted = clf5.predict(test_data)
-#proba= clf5.predict_proba(test_data)
+proba = clf5.predict_proba(test_data)
 print(metrics.classification_report(
     test_target,
     predicted,
 ))
+
+roc.roc_plot(Y2, proba, 2, filepath=os.path.join('figures', 'SVC' + 'roc.jpg'))
+print(accuracy_score(test_target, predicted))
