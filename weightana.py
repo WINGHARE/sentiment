@@ -26,7 +26,8 @@ from optparse import OptionParser
 from keras.preprocessing.text import Tokenizer
 
 
-import CNN 
+import feature_extract as f 
+import CNN
 
 argvs = sys.argv
 
@@ -45,9 +46,9 @@ def plot_filters(layer,x,y,filepath='filters.jpg'):
         ax.matshow(filters[:,:,0,j],cmap=mp.cm.binary) # shaape [5,5,1,128]
         plt.xticks(np.array([]))
         plt.yticks(np.array([]))
+    plt.savefig(filepath)
     plt.tight_layout()
     plt.show()
-    plt.savefig(filepath)
     plt.close()
     return plt
 
@@ -62,8 +63,8 @@ def plot_conv(output,x,y,filepath='cov.jpg'):
         plt.xticks(np.array([]))
         plt.yticks(np.array([]))
     #plt.tight_layout()
-    plt.show()
     plt.savefig(filepath)
+    plt.show()
     plt.close()
     return plt
 
@@ -87,10 +88,10 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = CNN.get_data()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
 
     model = CNN.bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8229_0_.hdf5')
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8286_0_.hdf5')
 
     model.pop()
     model.pop()
@@ -102,13 +103,27 @@ def main():
 
     print (l.shape)
 
-    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8229.jpg'))
+    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8286.jpg'))
 
     tk = get_dict()
     
     allwords = ' '.join(list(tk.word_index.keys()))
     
     vec=tk.texts_to_matrix([allwords], mode="tfidf")
+
+    vec = vec.reshape(1,100,20,1)
+
+    poolresult = model.predict(vec)
+
+    plt.imshow(vec[0,:,:,0])
+    plt.show()
+
+    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled' + '8286.jpg'))
+
+    model.pop()
+    result = model.predict(vec)
+
+    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs' + '8286.jpg'))
 
 
     return

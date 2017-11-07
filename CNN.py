@@ -149,7 +149,7 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data3()
 
     model = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
@@ -159,7 +159,7 @@ def main():
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'))
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D TF-IDF Porter")
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)

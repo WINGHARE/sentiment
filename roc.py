@@ -48,7 +48,7 @@ from scipy import interp
 
 
 
-def roc_plot(y_test,y_score,n_classes,filepath):
+def roc_plot(y_test,y_score,n_classes,filepath,title='ROC curve'):
     # Compute ROC curve and ROC area for each class
     fpr = dict()
     tpr = dict()
@@ -97,7 +97,7 @@ def roc_plot(y_test,y_score,n_classes,filepath):
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Some extension of Receiver operating characteristic to multi-class')
+    plt.title(title)
     plt.legend(loc="lower right")
     plt.show()
     plt.savefig(filepath)
