@@ -22,7 +22,7 @@ import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
-                          Flatten)
+                          Flatten,MaxPooling2D)
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import (classification_report, fbeta_score,
@@ -98,7 +98,7 @@ def bulid_model(X_train,
             padding='same',
             activation='relu',
             input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
-    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
@@ -149,7 +149,7 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data3()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
 
     model = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
@@ -159,7 +159,7 @@ def main():
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D TF-IDF Porter")
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D MAX pool")
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)

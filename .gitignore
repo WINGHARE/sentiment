@@ -1,5 +1,5 @@
 # no .a files
-#*.jpg
+*.sh
  
 # but do track lib.a, even though you're ignoring .a files above
 #!lib.a
