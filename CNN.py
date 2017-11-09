@@ -98,7 +98,7 @@ def bulid_model(X_train,
             padding='same',
             activation='relu',
             input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
@@ -159,7 +159,7 @@ def main():
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D MAX pool")
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D AVG pool")
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
