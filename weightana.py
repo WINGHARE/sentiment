@@ -118,12 +118,12 @@ def main():
     plt.imshow(vec[0,:,:,0])
     plt.show()
 
-    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled' + '8286.jpg'))
+    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled_max' + '8286.jpg'))
 
     model.pop()
     result = model.predict(vec)
 
-    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs' + '8286.jpg'))
+    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs_max' + '8286.jpg'))
 
 
     return
