@@ -14,6 +14,7 @@ import sys
 import os
 import re
 
+import pydot
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
@@ -24,6 +25,7 @@ from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D,Flatte
 from keras.models import Sequential
 from optparse import OptionParser
 from keras.preprocessing.text import Tokenizer
+from keras.utils import plot_model
 
 
 import feature_extract as f 
@@ -32,6 +34,9 @@ import CNN
 argvs = sys.argv
 
 opts, args = {}, []
+
+os.environ["PATH"] += os.pathsep + 'D:/Program Files (x86)/Graphviz2.38/bin/'
+
 
 print(argvs)
 print("##########")
@@ -92,6 +97,8 @@ def main():
 
     model = CNN.bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8286_0_.hdf5')
+
+    plot_model(model,to_file=os.path.join('figures', 'model_' + '8286.png'))
 
     model.pop()
     model.pop()
