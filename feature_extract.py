@@ -191,10 +191,43 @@ def get_data3():
 
     X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=0.4)
     return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
-    return
+
+def get_data_w2v():
+
+    data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
+
+    text = data['text']
+    target = data['target']
+
+    text = text.apply(lambda x: x.lower())  #lowercase
+    text = text.apply((
+        lambda x: re.sub(r'[?|$|&|*|%|@|(|)|~]', '', x)))  #remove punctuations
+    text = text.apply((
+        lambda x: re.sub(r'[^a-zA-Z0-9 ]', '', x)))  #only numbers and alphabet
+    text = text.apply(lambda x: removeStopWords(x))  #remove stopwords
+    text = text.apply(lambda x: lemmat(x))  #lemmatize the sentence
+    text = text.apply(lambda x: removeNonEnglish(x))  #remove
+
+    #train_data,test_data,train_target,test_target = train_test_split( 
+    #text.ravel(), target.ravel(), test_size=0.40, random_state=42)
+
+    rawdata = text
+    sentences = [[]]
+
+    for s in rawdata:
+        sentences.append(s.split())
+
+    import gensim, logging
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    model = gensim.models.Word2Vec(sentences,size = 32, min_count=1)
+
+    return model
     
 
 def main():
+
+    model = get_data_w2v()
+
 
     
 
