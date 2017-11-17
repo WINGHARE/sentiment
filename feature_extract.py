@@ -5,6 +5,8 @@ import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
 
 import keras.backend as K
 from keras.preprocessing.sequence import pad_sequences
@@ -222,15 +224,28 @@ def get_data_w2v():
     model = gensim.models.Word2Vec(sentences,size = 32, min_count=1)
 
     return model
-    
 
 def main():
 
-    model = get_data_w2v()
+    #model = get_data_w2v()
 
+    data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
 
+    text = data['text']
+    target = data['target']
+    
+    lens = [len(item.split()) for item in text]
+    plt.hist(lens,bins=30)
+    plt.ylabel('Number of Documents')
+    plt.xlabel('Word Count')
+    plt.savefig(os.path.join('data', 'stat.jpg'))
+    plt.close()
     
 
     return 
+
+if __name__ =="__main__":
+    main()
+
 
 
