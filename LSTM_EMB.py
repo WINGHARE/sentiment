@@ -164,7 +164,7 @@ def main():
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'))
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),title=opts.title,fmt='svg')
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
@@ -202,6 +202,15 @@ if __name__ == "__main__":
         type='string',
         dest='load',
         help='load weight form file')
+
+    op.add_option(
+        '-t',
+        '--title',
+        default='ROC curve',
+        action='store',
+        type='string',
+        dest='title',
+        help='figure titile')
     (opts, args) = op.parse_args()
     if len(args) > 0:
         op.print_help()

@@ -92,7 +92,7 @@ proba = clf2.predict_proba(test_data)
 ohenc = OneHotEncoder()
 Y2 = ohenc.fit_transform(test_target.reshape(-1, 1)).toarray()
 roc.roc_plot(
-    Y2, proba, 2, filepath=os.path.join('figures', 'tradSGD' + 'roc.jpg'))
+    Y2, proba, 2, filepath=os.path.join('figures', 'tradSGD' + 'roc.svg'),title='Logistic',fmt='svg')
 
 print(metrics.classification_report(
     test_target,
@@ -134,5 +134,5 @@ print(metrics.classification_report(
     predicted,
 ))
 
-roc.roc_plot(Y2, proba, 2, filepath=os.path.join('figures', 'SVC' + 'roc.jpg'))
+roc.roc_plot(Y2, proba, 2, filepath=os.path.join('figures', 'SVC' + 'roc.svg'),title='SVM',fmt='svg')
 print(accuracy_score(test_target, predicted))
