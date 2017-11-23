@@ -14,8 +14,6 @@ import re
 import sys
 import time
 
-
-
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
@@ -28,7 +26,7 @@ from sklearn.utils import shuffle
 
 import keras.backend as K
 from keras.callbacks import Callback, ModelCheckpoint
-from keras.layers import LSTM, Dense, Embedding, GRU
+from keras.layers import LSTM, Dense, Embedding, Conv2D, AveragePooling2D, Flatten, Reshape
 from keras.models import Sequential
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
@@ -40,14 +38,12 @@ from sklearn.preprocessing import OneHotEncoder
 from optparse import OptionParser
 from sklearn.metrics import classification_report
 
-
-
 argvs = sys.argv
 
 opts, args = {}, []
 
-print (argvs)
-print ("##########")
+print(argvs)
+print("##########")
 
 
 def precision(y_true, y_pred):
@@ -65,14 +61,17 @@ def recall(y_true, y_pred):
     recall = true_positives / (possible_positives + K.epsilon())
     return recall
 
-def f1score(y_true, y_pred):
-    r = recall(y_true,y_pred)
-    p = precision(y_true,y_pred)
-    return 2*p*r/(p+r)
 
-def decode_y(y,features=np.array([0,1])):
-    return np.dot(y,features).astype(int)
-    
+def f1score(y_true, y_pred):
+    r = recall(y_true, y_pred)
+    p = precision(y_true, y_pred)
+    return 2 * p * r / (p + r)
+
+
+def decode_y(y, features=np.array([0, 1])):
+    return np.dot(y, features).astype(int)
+
+
 def get_data():
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
@@ -89,15 +88,17 @@ def get_data():
     X2 = tokenizer.texts_to_matrix(text_list, mode="tfidf")
     X3 = [np.reshape(X2[i], (-1, 20)) for i in range(0, len(X2))]
     X3 = np.asarray(X3)
+    X3 = X3.reshape(X3.shape[0], X3.shape[1], X3.shape[2], 1)
 
     Y = [sentiment[i] for i in range(0, len(sentiment))]
     Y = np.asarray(Y)
 
-    ohenc= OneHotEncoder()
-    Y2 = ohenc.fit_transform(Y.reshape(-1,1)).toarray()
+    ohenc = OneHotEncoder()
+    Y2 = ohenc.fit_transform(Y.reshape(-1, 1)).toarray()
 
-    X_train,X_test,Y_train,Y_test = train_test_split(X3,Y2,test_size=0.4)
-    return X_train,X_test,Y_train,Y_test,X,X2,X3,ohenc
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y2, test_size=0.4)
+    return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
+
 
 class TestCallback(Callback):
     def __init__(self, test_data1, test_data2):
@@ -111,19 +112,33 @@ class TestCallback(Callback):
         print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
 
 
-def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
+def bulid_model(X_train,
+                X_test,
+                Y_train,
+                Y_test,
+                X,
+                X2,
+                X3,
+                CID,
+                fromfile='none'):
     model = Sequential()
+    model.add(Embedding(2000, 32, input_length=X.shape[1]))
+    model.add(Reshape((X.shape[1], 32, 1), input_shape=(X.shape[1], 32)))
     model.add(
-        LSTM(512,
-        return_sequences=True,
-        input_shape=X3[0].shape,
-        dropout=0.2,
-        recurrent_dropout=0.2))   
-    model.add(LSTM(512, return_sequences=False, dropout=0.2))
+        Conv2D(
+            128,
+            kernel_size=(32, 3),
+            strides=(1, 1),
+            padding='same',
+            activation='relu'  #,
+            #input_shape=(X3[0].shape[0],X3[0].shape[1],1)
+        ))
+    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
 
-    if(fromfile == 'none'):
+    if (fromfile == 'none'):
         model.compile(
             loss='categorical_crossentropy',
             optimizer='adam',
@@ -136,7 +151,7 @@ def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'),
             verbose=1,
             save_best_only=True)
-    
+
         model.fit(
             X_train,
             Y_train,
@@ -146,55 +161,77 @@ def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
             validation_data=(X_test, Y_test),
             callbacks=[checkpointer])
 
-        model.save_weights(filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-        return model 
-    
-    else :
-        filepath=os.path.join('tmp', fromfile)
+        model.save_weights(
+            filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
+        return model
+
+    else:
+        filepath = os.path.join('tmp', fromfile)
         model.load_weights(filepath=filepath)
         model.compile(
             loss='categorical_crossentropy',
             optimizer='adam',
-            metrics=['accuracy', recall, precision,f1score])
+            metrics=['accuracy', recall, precision, f1score])
         print(model.summary())
-        return model 
+        return model
 
-    return model 
+    return model
+
 
 def main():
 
-    CID = opts.cluster
+    CID = '8288'
 
-    if(opts.load!='none'): CID = opts.load
+    if (opts.load != 'none'): CID = opts.load
 
-    X_train,X_test,Y_train,Y_test,X,X2,X3,enc = get_data()
-    
-    model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile=opts.load)
-        
-    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = get_data()
+
+    model = bulid_model(
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8288_0_.hdf5')
+
+    #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
-    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + 'roc.eps'),title='LSTM + 2D TF-IDF')
+    roc.roc_plot(
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),title='CNN + EMBEDDING',fmt='svg')
 
-    Y_de = decode_y(Y_test,features=enc.active_features_)
+    Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
-    Y_depred = decode_y(Y_pred,features=enc.active_features_)
-    print(classification_report(Y_de,Y_depred))
+    Y_depred = decode_y(Y_pred, features=enc.active_features_)
+    print(classification_report(Y_de, Y_depred))
 
     return
 
 
 if __name__ == "__main__":
 
-    
     plt.switch_backend('agg')
     mp.use('Agg')
 
     op = OptionParser()
-    op.add_option('-c', '--cluster', action='store', type= 'string' ,dest='cluster', help='indicate the clusterid')
-    op.add_option('-d', '--date', action='store', type= 'string' ,dest='date', help='indicate the date')
-    op.add_option('-l', '--load', default='none',action='store', type= 'string' ,dest='load', help='load weight form file')
+    op.add_option(
+        '-c',
+        '--cluster',
+        action='store',
+        type='string',
+        dest='cluster',
+        help='indicate the clusterid')
+    op.add_option(
+        '-d',
+        '--date',
+        action='store',
+        type='string',
+        dest='date',
+        help='indicate the date')
+    op.add_option(
+        '-l',
+        '--load',
+        default='none',
+        action='store',
+        type='string',
+        dest='load',
+        help='load weight form file')
     (opts, args) = op.parse_args()
     if len(args) > 0:
         op.print_help()
@@ -202,4 +239,3 @@ if __name__ == "__main__":
         exit(1)
 
     main()
-

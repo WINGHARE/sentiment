@@ -163,19 +163,19 @@ def bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='none'):
 
 def main():
 
-    CID = opts.cluster
+    CID = '8196'
 
     if(opts.load!='none'): CID = opts.load
 
     X_train,X_test,Y_train,Y_test,X,X2,X3,enc = get_data()
     
-    model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile=opts.load)
+    model = bulid_model(X_train,X_test,Y_train,Y_test,X,X2,X3,CID,fromfile='weights_8196_0_.hdf5')
         
     newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
-    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + 'roc.eps'),title='LSTM + 2D TF-IDF')
+    roc.roc_plot(Y_test,Y_score,2,filepath=os.path.join('figures', CID + 'roc.svg'),title='LSTM + 2D TF-IDF',fmt='svg')
 
     Y_de = decode_y(Y_test,features=enc.active_features_)
     Y_pred = model.predict(X_test)
