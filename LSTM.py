@@ -178,7 +178,7 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = get_data2()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = get_data()
 
     model = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
