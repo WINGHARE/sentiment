@@ -21,6 +21,9 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 import nltk
 
+import weightana as ana
+
+
 words = set(nltk.corpus.words.words())
 stemmer = PorterStemmer()
 
@@ -221,25 +224,29 @@ def get_data_w2v():
 
     import gensim, logging
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-    model = gensim.models.Word2Vec(sentences,size = 32, min_count=1)
+    model = gensim.models.Word2Vec(sentences,size = 100, min_count=1,negative=3)
 
     return model
 
 def main():
 
-    #model = get_data_w2v()
+    model = get_data_w2v()
 
-    data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
-
-    text = data['text']
-    target = data['target']
+    #print (model.wv.vocab)
     
-    lens = [len(item.split()) for item in text]
-    plt.hist(lens,bins=30)
-    plt.ylabel('Number of Documents')
-    plt.xlabel('Word Count')
-    plt.savefig(os.path.join('data', 'stat.jpg'))
-    plt.close()
+    tk = ana.get_dict()
+
+    #data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
+
+    # text = data['text']
+    # target = data['target']
+    
+    # lens = [len(item.split()) for item in text]
+    # plt.hist(lens,bins=30)
+    # plt.ylabel('Number of Documents')
+    # plt.xlabel('Word Count')
+    # plt.savefig(os.path.join('data', 'stat.jpg'))
+    # plt.close()
     
 
     return 
