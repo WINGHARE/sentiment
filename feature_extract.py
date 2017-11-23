@@ -21,7 +21,7 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 import nltk
 
-import weightana as ana
+#import weightana as ana
 
 
 words = set(nltk.corpus.words.words())
@@ -230,11 +230,11 @@ def get_data_w2v():
 
 def main():
 
-    model = get_data_w2v()
+    #model = get_data_w2v()
 
     #print (model.wv.vocab)
     
-    tk = ana.get_dict()
+    #tk = ana.get_dict()
 
     #data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
 
