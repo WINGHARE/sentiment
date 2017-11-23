@@ -197,6 +197,7 @@ if __name__ == "__main__":
         type='string',
         dest='load',
         help='load weight form file')
+        
     op.add_option(
         '-t',
         '--title',
