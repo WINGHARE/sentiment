@@ -145,20 +145,21 @@ def bulid_model(X_train,
 
 def main():
 
-    CID = "8286"
+    CID = opts.cluster
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data3()
 
     model = bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8286_0_.hdf5')
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
+    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.jpg'),title="CNN 2D TF IDF + AVG pool",fmt='svg')
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),fmt='svg',title=opts.title)
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
@@ -196,6 +197,16 @@ if __name__ == "__main__":
         type='string',
         dest='load',
         help='load weight form file')
+
+    op.add_option(
+        '-t',
+        '--title',
+        default='ROC curve',
+        action='store',
+        type='string',
+        dest='title',
+        help='figure titile')
+
     (opts, args) = op.parse_args()
     if len(args) > 0:
         op.print_help()

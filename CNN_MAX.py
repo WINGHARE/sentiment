@@ -22,7 +22,7 @@ import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
-                          Flatten)
+                          Flatten,MaxPooling2D)
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import (classification_report, fbeta_score,
@@ -40,7 +40,6 @@ opts, args = {}, []
 
 print(argvs)
 print("##########")
-
 
 def precision(y_true, y_pred):
     #Calculates the precision
@@ -68,6 +67,7 @@ def decode_y(y, features=np.array([0, 1])):
     return np.dot(y, features).astype(int)
 
 
+
 class TestCallback(Callback):
     def __init__(self, test_data1, test_data2):
         self.Xdata = test_data1
@@ -89,24 +89,19 @@ def bulid_model(X_train,
                 X3,
                 CID,
                 fromfile='none'):
-    # model = Sequential()
-    # model.add(
-    #     Embedding(2000, 32, input_length=X.shape[1], dropout=0.2))
-    # model.add(LSTM(512, dropout_U=0.2, dropout_W=0.2))
-    # model.add(LSTM(512, return_sequences=False, dropout=0.2))
-
-    # model.add(Dense(256, activation='tanh'))
-    # model.add(Dense(2, activation='softmax'))
-
     model = Sequential()
-    model.add(Embedding(2000, 32, input_length=X.shape[1], dropout=0.2))
-    model.add(LSTM(196, dropout_U=0.2, dropout_W=0.2))
+    model.add(
+        Conv2D(
+            128,
+            kernel_size=(10, 2),
+            strides=(1, 1),
+            padding='same',
+            activation='relu',
+            input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
-    model.compile(
-        loss='categorical_crossentropy',
-        optimizer='adam',
-        metrics=['accuracy'])
 
     if (fromfile == 'none'):
         model.compile(
@@ -150,21 +145,21 @@ def bulid_model(X_train,
 
 def main():
 
-    CID = '472'
+    CID = opts.cluster
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2_emb()
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
 
     model = bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_472_0_.hdf5')
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
-    #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),fmt='svg',title='LSTM + EMBEDDING')
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),fmt='svg',title=opts.title)
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
@@ -202,6 +197,16 @@ if __name__ == "__main__":
         type='string',
         dest='load',
         help='load weight form file')
+
+    op.add_option(
+        '-t',
+        '--title',
+        default='ROC curve',
+        action='store',
+        type='string',
+        dest='title',
+        help='figure titile')
+
     (opts, args) = op.parse_args()
     if len(args) > 0:
         op.print_help()
