@@ -159,7 +159,7 @@ def main():
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + 'roc.svg'),fmt='svg',title=opts.title)
+        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),fmt='svg',title=opts.title)
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
