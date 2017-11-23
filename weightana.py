@@ -30,6 +30,7 @@ from keras.utils import plot_model
 
 import feature_extract as f 
 import CNN
+import CNN_MAX
 
 argvs = sys.argv
 
@@ -96,9 +97,9 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data2()
 
     model = CNN.bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8286_0_.hdf5')
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile='weights_8401_0_.hdf5')
 
-    plot_model(model,to_file=os.path.join('figures', 'model_' + '8286.png'))
+    plot_model(model,to_file=os.path.join('figures', 'model_' + '8401.png'))
 
     model.pop()
     model.pop()
@@ -110,7 +111,7 @@ def main():
 
     print (l.shape)
 
-    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8286.jpg'))
+    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8401.jpg'))
 
     tk = get_dict()
     
@@ -125,12 +126,12 @@ def main():
     plt.imshow(vec[0,:,:,0])
     plt.show()
 
-    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled_max' + '8286.jpg'))
+    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled_max' + '8401.jpg'))
 
     model.pop()
     result = model.predict(vec)
 
-    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs_max' + '8286.jpg'))
+    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs_max' + '8401.jpg'))
 
 
     return
