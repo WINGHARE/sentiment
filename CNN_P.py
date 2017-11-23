@@ -98,7 +98,7 @@ def bulid_model(X_train,
             padding='same',
             activation='relu',
             input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
-    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
