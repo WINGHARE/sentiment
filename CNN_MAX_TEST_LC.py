@@ -79,20 +79,20 @@ class TestCallback(Callback):
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
         print(self.model.evaluate(x, y, verbose=0))
         print(self.model.metrics_names)
-        print('\nEpoch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
-              format(loss, acc, recall, pre, f1))
-    
-    def on_batch_end(self,batch,logs={}):
-        Callback.on_batch_end(self,batch=batch,logs=logs)
+        print(
+            '\nEpoch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
+            format(loss, acc, recall, pre, f1))
+
+    def on_batch_end(self, batch, logs={}):
+        Callback.on_batch_end(self, batch=batch, logs=logs)
         x = self.Xdata
         y = self.Ydata
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
         print(self.model.evaluate(x, y, verbose=0))
         print(self.model.metrics_names)
-        print('\nBatch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
-              format(loss, acc, recall, pre, f1))
-
-
+        print(
+            '\nBatch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
+            format(loss, acc, recall, pre, f1))
 
 
 def bulid_model(X_train,
@@ -133,16 +133,16 @@ def bulid_model(X_train,
             verbose=1,
             save_best_only=True)
 
-        history = TestCallback(X_test, Y_test)
+        #history = TestCallback(X_test, Y_test)
 
-        model.fit(
+        history = model.fit(
             X_train,
             Y_train,
             epochs=15,
             batch_size=batch_size,
             verbose=1,
             validation_data=(X_test, Y_test),
-            callbacks=[checkpointer, history])
+            callbacks=[checkpointer])
 
         model.save_weights(
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
@@ -158,7 +158,7 @@ def bulid_model(X_train,
         print(model.summary())
         return model
 
-    return model
+    return model, history
 
 
 def main():
@@ -170,7 +170,7 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
         testsize=0.2)
 
-    model = bulid_model(
+    model, history = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
     #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
@@ -184,6 +184,17 @@ def main():
         filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),
         fmt='svg',
         title=opts.title)
+
+    print(history.history.keys())
+    # summarize history for accuracy
+    
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.savefig(os.path.join('figures', CID + opts.title + 'learning-c.svg'),format='svg')
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
