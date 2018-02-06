@@ -192,7 +192,7 @@ def main():
     
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
-    plt.ylim(0.4,1)
+    #plt.ylim(0.7,1)
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
