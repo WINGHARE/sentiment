@@ -77,7 +77,7 @@ class TestCallback(Callback):
         x = self.Xdata
         y = self.Ydata
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
-        print('\nTesting loss: {}, acc: {}\n'.format(loss, acc))
+        print('\nTesting loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.format(loss, acc, recall, pre, f1))
 
 
 def bulid_model(X_train,
