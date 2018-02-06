@@ -77,7 +77,7 @@ class TestCallback(Callback):
         x = self.Xdata
         y = self.Ydata
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
-        print(model.metrics_names)
+        print(self.model.metrics_names)
         print('\nTesting loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.format(loss, acc, recall, pre, f1))
 
 
