@@ -168,7 +168,7 @@ def main():
     if (opts.load != 'none'): CID = opts.load
 
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
-        testsize=0.2)
+        testsize=0.4)
 
     model, history = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
