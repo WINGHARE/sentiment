@@ -228,7 +228,7 @@ def get_data_w2v():
 
     return model
 
-    def get_data_pro(testsize=0.4):
+def get_data_pro(testsize=0.4):
     data = pd.read_csv(os.path.join('data', '01.csv'), encoding="ISO-8859-1")
     text = data['text']
     sentiment = data['target']
