@@ -185,6 +185,8 @@ def main():
         fmt='svg',
         title=opts.title)
 
+    plt.close()
+
     print(history.history.keys())
     # summarize history for accuracy
     
@@ -195,6 +197,7 @@ def main():
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.savefig(os.path.join('figures', CID + opts.title + 'learning-c.svg'),format='svg')
+    plt.close()
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
