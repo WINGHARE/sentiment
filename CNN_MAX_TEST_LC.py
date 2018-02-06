@@ -119,6 +119,8 @@ def bulid_model(X_train,
             verbose=1,
             save_best_only=True)
 
+        history = TestCallback()
+
         model.fit(
             X_train,
             Y_train,
@@ -126,7 +128,7 @@ def bulid_model(X_train,
             batch_size=batch_size,
             verbose=1,
             validation_data=(X_test, Y_test),
-            callbacks=[checkpointer])
+            callbacks=[checkpointer，history])
 
         model.save_weights(
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
