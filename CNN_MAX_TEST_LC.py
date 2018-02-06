@@ -119,7 +119,7 @@ def bulid_model(X_train,
             verbose=1,
             save_best_only=True)
 
-        history = TestCallback()
+        history = TestCallback(X_test, Y_test)
 
         model.fit(
             X_train,
