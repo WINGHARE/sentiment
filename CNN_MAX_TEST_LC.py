@@ -22,7 +22,7 @@ import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
-                          Flatten,MaxPooling2D)
+                          Flatten, MaxPooling2D)
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import (classification_report, fbeta_score,
@@ -40,6 +40,7 @@ opts, args = {}, []
 
 print(argvs)
 print("##########")
+
 
 def precision(y_true, y_pred):
     #Calculates the precision
@@ -67,7 +68,6 @@ def decode_y(y, features=np.array([0, 1])):
     return np.dot(y, features).astype(int)
 
 
-
 class TestCallback(Callback):
     def __init__(self, test_data1, test_data2):
         self.Xdata = test_data1
@@ -78,7 +78,21 @@ class TestCallback(Callback):
         y = self.Ydata
         loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
         print(self.model.evaluate(x, y, verbose=0))
-        print('\nTesting loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.format(loss, acc, recall, pre, f1))
+        print(model.metrics_names)
+        print('\nEpoch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
+              format(loss, acc, recall, pre, f1))
+    
+    def on_batch_end(self,batch,logs={}):
+        Callback.on_batch_end(self,batch=batch,logs=logs)
+        x = self.Xdata
+        y = self.Ydata
+        loss, acc, recall, pre, f1 = self.model.evaluate(x, y, verbose=0)
+        print(self.model.evaluate(x, y, verbose=0))
+        print(model.metrics_names)
+        print('\nBatch testing loss: {}, acc: {}, recall: {}, preci: {}, f1: {}\n'.
+              format(loss, acc, recall, pre, f1))
+
+
 
 
 def bulid_model(X_train,
@@ -98,7 +112,7 @@ def bulid_model(X_train,
             strides=(1, 1),
             padding='same',
             activation='relu',
-            input_shape=(X3[0].shape[0],X3[0].shape[1],1)))
+            input_shape=(X3[0].shape[0], X3[0].shape[1], 1)))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
@@ -128,7 +142,7 @@ def bulid_model(X_train,
             batch_size=batch_size,
             verbose=1,
             validation_data=(X_test, Y_test),
-            callbacks=[checkpointer,history])
+            callbacks=[checkpointer, history])
 
         model.save_weights(
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
@@ -153,17 +167,23 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(testsize=0.2)
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
+        testsize=0.2)
 
     model = bulid_model(
         X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
-    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
     Y_score = model.predict_proba(X_test)
 
     roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),fmt='svg',title=opts.title)
+        Y_test,
+        Y_score,
+        2,
+        filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),
+        fmt='svg',
+        title=opts.title)
 
     Y_de = decode_y(Y_test, features=enc.active_features_)
     Y_pred = model.predict(X_test)
