@@ -34,6 +34,10 @@ from sklearn.utils import shuffle
 import feature_extract as f
 import roc as roc
 
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
+
 argvs = sys.argv
 
 opts, args = {}, []
@@ -146,7 +150,7 @@ def bulid_model(X_train,
 
         model.save_weights(
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-        return model, history
+        return model
 
     else:
         filepath = os.path.join('tmp', fromfile)
@@ -158,7 +162,27 @@ def bulid_model(X_train,
         print(model.summary())
         return model
 
-    return model, history
+    return model
+
+
+def bulid_model2():
+    model = Sequential()
+    model.add(
+        Conv2D(
+            128,
+            kernel_size=(10, 2),
+            strides=(1, 1),
+            padding='same',
+            activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    model.add(Flatten())
+    model.add(Dense(256, activation='tanh'))
+    model.add(Dense(2, activation='softmax'))
+    model.compile(
+        loss='categorical_crossentropy',
+        optimizer='adam',
+        metrics=['accuracy'])
+    return model
 
 
 def main():
@@ -170,40 +194,46 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
         testsize=0.4)
 
-    model, history = bulid_model(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
+    # model, history = bulid_model(
+    #     X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
-    #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    # #newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 
-    Y_score = model.predict_proba(X_test)
+    # Y_score = model.predict_proba(X_test)
 
-    roc.roc_plot(
-        Y_test,
-        Y_score,
-        2,
-        filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),
-        fmt='svg',
-        title=opts.title)
+    # roc.roc_plot(
+    #     Y_test,
+    #     Y_score,
+    #     2,
+    #     filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),
+    #     fmt='svg',
+    #     title=opts.title)
 
-    plt.close()
+    # plt.close()
 
-    print(history.history.keys())
-    # summarize history for accuracy
-    
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
-    #plt.ylim(0.7,1)
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.savefig(os.path.join('figures', CID + opts.title + 'learning-c.svg'),format='svg')
-    plt.close()
+    # print(history.history.keys())
+    # # summarize history for accuracy
 
-    Y_de = decode_y(Y_test, features=enc.active_features_)
-    Y_pred = model.predict(X_test)
-    Y_depred = decode_y(Y_pred, features=enc.active_features_)
-    print(classification_report(Y_de, Y_depred))
+    # plt.plot(history.history['acc'])
+    # plt.plot(history.history['val_acc'])
+    # plt.title('model accuracy')
+    # plt.ylabel('accuracy')
+    # plt.xlabel('epoch')
+    # plt.legend(['train', 'test'], loc='upper left')
+    # plt.savefig(os.path.join('figures', CID + opts.title + 'learning-c.svg'),format='svg')
+    # plt.close()
+
+    #Y_de = decode_y(Y_test, features=enc.active_features_)
+    #Y_pred = model.predict(X_test)
+    #Y_depred = decode_y(Y_pred, features=enc.active_features_)
+    #print(classification_report(Y_de, Y_depred))
+
+    ## CV using kfold
+    model = KerasClassifier(
+        build_fn=bulid_model2, nb_epoch=15, batch_size=32, verbose=0)
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    results = cross_val_score(model, X_train, Y_train, cv=kfold)
+    print("accuracy: {0} %".format(results.mean() * 100))
 
     return
 
