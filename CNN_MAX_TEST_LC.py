@@ -146,7 +146,7 @@ def bulid_model(X_train,
 
         model.save_weights(
             filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-        return model
+        return model, history
 
     else:
         filepath = os.path.join('tmp', fromfile)
