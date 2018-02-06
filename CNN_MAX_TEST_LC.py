@@ -110,6 +110,7 @@ def bulid_model(X_train,
             optimizer='adam',
             metrics=['accuracy', recall, precision, f1score])
         print(model.summary())
+        print(model.metrics_names)
 
         batch_size = 32
 
