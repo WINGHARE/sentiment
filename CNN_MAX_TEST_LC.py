@@ -216,9 +216,9 @@ def main():
 
         Y_de = decode_y(y_test, features=enc.active_features_)
         Y_pred = model.predict(x_test)
+        Y_score = model.predict_proba(x_test)
 
-        Y_score = model.predict_proba(Y_de,Y_score)
-        fpr, tpr, th  = roc_curve(y_test,y)
+        fpr, tpr, th  = roc_curve(y_test,Y_score)
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
 
         accues.append(accuracy_score(Y_depred,Y_de))
