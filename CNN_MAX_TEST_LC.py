@@ -206,12 +206,12 @@ def main():
 
     for train_index, test_index in skf.split(X_train, Y_inv):
         print("TRAIN:", train_index, "TEST:", test_index)
-        X_train, X_test = X_train[train_index], X_train[test_index]
+        x_train, x_test = X_train[train_index], X_train[test_index]
         y_train, y_test = Y_train[train_index], Y_train[test_index]
 
-        model = bulid_model(X_train, X_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
+        model = bulid_model(x_train, x_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
         Y_de = decode_y(y_test, features=enc.active_features_)
-        Y_pred = model.predict(X_test)
+        Y_pred = model.predict(x_test)
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
         print(classification_report(Y_de, Y_depred))
 
