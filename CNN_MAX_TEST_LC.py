@@ -215,7 +215,7 @@ def main():
         Y_de = decode_y(y_test, features=enc.active_features_)
         Y_pred = model.predict(x_test)
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
-        accues.append(accuracy_score(Y_depred,y_test))
+        accues.append(accuracy_score(Y_depred,Y_de))
 
     
     print("###########################")
