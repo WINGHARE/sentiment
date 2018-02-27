@@ -148,8 +148,8 @@ def bulid_model(X_train,
             validation_data=(X_test, Y_test),
             callbacks=[checkpointer])
 
-        model.save_weights(
-            filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
+        #model.save_weights(
+            #filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
         return model
 
     else:
@@ -208,6 +208,14 @@ def main():
         print("TRAIN:", train_index, "TEST:", test_index)
         X_train, X_test = X_train[train_index], X_train[test_index]
         y_train, y_test = Y_train[train_index], Y_train[test_index]
+
+        model = bulid_model(X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
+
+
+
+
+    
+
 
 
     # model, history = bulid_model(
