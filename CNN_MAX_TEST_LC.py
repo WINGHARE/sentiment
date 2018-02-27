@@ -194,10 +194,17 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
         testsize=0)
 
-    skf = StratifiedKFold(n_splits=10)
-    skf.get_n_splits(X_train, Y_train)
+    X_shape = X_train.shape
+    X_holder = np.zeros(X_shape[0])
 
-    for train_index, test_index in skf.split(X_train, Y_train):
+    Y_inv = decode_y(Y_train)
+
+    print(X_shape)
+
+    skf = StratifiedKFold(n_splits=10)
+    skf.get_n_splits(X_holder, Y_inv)
+
+    for train_index, test_index in skf.split(X_holder, Y_inv):
         print("TRAIN:", train_index, "TEST:", test_index)
         X_train, X_test = X_train[train_index], X_train[test_index]
         y_train, y_test = Y_train[train_index], Y_train[test_index]
