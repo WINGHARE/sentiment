@@ -43,7 +43,7 @@ argvs = sys.argv
 opts, args = {}, []
 
 print(argvs)
-print("###educs#######")
+print("###educsddd#######")
 
 
 def precision(y_true, y_pred):
