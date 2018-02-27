@@ -210,6 +210,11 @@ def main():
         y_train, y_test = Y_train[train_index], Y_train[test_index]
 
         model = bulid_model(X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
+        Y_de = decode_y(Y_test, features=enc.active_features_)
+        Y_pred = model.predict(X_test)
+        Y_depred = decode_y(Y_pred, features=enc.active_features_)
+        print(classification_report(Y_de, Y_depred))
+
 
 
 
