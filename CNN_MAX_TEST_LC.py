@@ -25,7 +25,7 @@ from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
                           Flatten, MaxPooling2D)
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
-from sklearn.metrics import (classification_report, fbeta_score,roc_curve
+from sklearn.metrics import (classification_report, fbeta_score,roc_curve,
                              precision_score, recall_score,accuracy_score,auc)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
