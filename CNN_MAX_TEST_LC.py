@@ -26,7 +26,7 @@ from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import (classification_report, fbeta_score,
-                             precision_score, recall_score)
+                             precision_score, recall_score,accuracy_score)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import shuffle
@@ -204,6 +204,8 @@ def main():
     skf = StratifiedKFold(n_splits=10)
     skf.get_n_splits(X_train, Y_inv)
 
+    accues = []
+
     for train_index, test_index in skf.split(X_train, Y_inv):
         print("TRAIN:", train_index, "TEST:", test_index)
         x_train, x_test = X_train[train_index], X_train[test_index]
@@ -213,8 +215,11 @@ def main():
         Y_de = decode_y(y_test, features=enc.active_features_)
         Y_pred = model.predict(x_test)
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
-        print(classification_report(Y_de, Y_depred))
+        accues.append(accuracy_score(Y_depred,y_test))
 
+    
+    print("###########################")
+    print(accues)
 
 
 
