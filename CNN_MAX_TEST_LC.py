@@ -26,7 +26,7 @@ from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
 from sklearn.metrics import (classification_report, fbeta_score,
-                             precision_score, recall_score,accuracy_score)
+                             precision_score, recall_score,accuracy_score,auc)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import shuffle
