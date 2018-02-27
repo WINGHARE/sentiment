@@ -192,7 +192,16 @@ def main():
     if (opts.load != 'none'): CID = opts.load
 
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
-        testsize=0.4)
+        testsize=0)
+
+    skf = StratifiedKFold(n_splits=10)
+    skf.get_n_splits(X_train, Y_train)
+
+    for train_index, test_index in skf.split(X_train, Y_train):
+        print("TRAIN:", train_index, "TEST:", test_index)
+        X_train, X_test = X_train[train_index], X_train[test_index]
+        y_train, y_test = Y_train[train_index], Y_train[test_index]
+
 
     # model, history = bulid_model(
     #     X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
@@ -228,12 +237,7 @@ def main():
     #Y_depred = decode_y(Y_pred, features=enc.active_features_)
     #print(classification_report(Y_de, Y_depred))
 
-    ## CV using kfold
-    model = KerasClassifier(
-        build_fn=bulid_model2, nb_epoch=15, batch_size=32, verbose=0)
-    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    results = cross_val_score(model, X_train, Y_train, cv=kfold)
-    print("accuracy: {0} %".format(results.mean() * 100))
+
 
     return
 
