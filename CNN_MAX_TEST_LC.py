@@ -25,7 +25,7 @@ from keras.layers import (LSTM, AveragePooling2D, Conv2D, Dense, Embedding,
                           Flatten, MaxPooling2D)
 from keras.models import Sequential
 from keras.utils.np_utils import to_categorical
-from sklearn.metrics import (classification_report, fbeta_score,
+from sklearn.metrics import (classification_report, fbeta_score,roc_curve
                              precision_score, recall_score,accuracy_score,auc)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
@@ -205,6 +205,7 @@ def main():
     skf.get_n_splits(X_train, Y_inv)
 
     accues = []
+    aucs = []
 
     for train_index, test_index in skf.split(X_train, Y_inv):
         print("TRAIN:", train_index, "TEST:", test_index)
@@ -212,14 +213,22 @@ def main():
         y_train, y_test = Y_train[train_index], Y_train[test_index]
 
         model = bulid_model(x_train, x_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
+
         Y_de = decode_y(y_test, features=enc.active_features_)
         Y_pred = model.predict(x_test)
+
+        Y_score = model.predict_proba(Y_de,Y_score)
+        fpr, tpr, th  = roc_curve(y_test,y)
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
+
         accues.append(accuracy_score(Y_depred,Y_de))
+        accues.append(auc(fpr, tpr))
 
     
     print("###########################")
     print(accues)
+    print(aucs)
+
 
 
 
