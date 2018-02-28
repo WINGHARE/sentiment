@@ -218,11 +218,11 @@ def main():
         Y_pred = model.predict(x_test)
         Y_score = model.predict_proba(x_test)
 
-        fpr, tpr, th  = roc_curve(Y_de,Y_score[:,0])
+        fpr, tpr, th  = roc_curve(Y_de,Y_score[:,1])
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
 
         accues.append(accuracy_score(Y_depred,Y_de))
-        accues.append(auc(fpr, tpr))
+        aucs.append(auc(fpr, tpr))
 
     
     print("###########################")
