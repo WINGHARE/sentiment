@@ -29,7 +29,7 @@ from sklearn.metrics import (classification_report, fbeta_score,roc_curve,
                              precision_score, recall_score,accuracy_score,auc)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.utils import shuffle
+from sklearn.utils import shuffle,resample
 
 import feature_extract as f
 import roc as roc
@@ -184,7 +184,6 @@ def bulid_model2():
         metrics=['accuracy'])
     return model
 
-
 def main():
 
     CID = opts.cluster
@@ -196,33 +195,42 @@ def main():
 
     Y_inv = decode_y(Y_train)
 
-    skf = StratifiedKFold(n_splits=10)
-    skf.get_n_splits(X_train, Y_inv)
+    ranges = np.linspace(.1, 1.0, 10)
 
-    accues = []
-    aucs = []
+    for size in ranges:
 
-    for train_index, test_index in skf.split(X_train, Y_inv):
-        print("TRAIN:", train_index, "TEST:", test_index)
-        x_train, x_test = X_train[train_index], X_train[test_index]
-        y_train, y_test = Y_train[train_index], Y_train[test_index]
+        x_train, x_placeholder, y_train, yplaceholder = train_test_split(X_train, Y_train, test_size=1-size,random_state=0)
+        
+        skf = StratifiedKFold(n_splits=10)
 
-        model = bulid_model(x_train, x_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
+        y_train_dec = decode_y(y_train)
 
-        Y_de = decode_y(y_test, features=enc.active_features_)
-        Y_pred = model.predict(x_test)
-        Y_score = model.predict_proba(x_test)
+        skf.get_n_splits(x_train, y_train_dec)
 
-        fpr, tpr, th  = roc_curve(Y_de,Y_score[:,1])
-        Y_depred = decode_y(Y_pred, features=enc.active_features_)
+        accues = []
+        aucs = []
 
-        accues.append(accuracy_score(Y_depred,Y_de))
-        aucs.append(auc(fpr, tpr))
+        for train_index, validate_index in skf.split(X_train, y_train_dec):
+            print("TRAIN:", train_index, "TEST:", validate_index)
+            x_cvtrain, x_validate = x_train[train_index], x_train[validate_index]
+            y_cvtrain, y_validate = y_train[train_index], y_train[validate_index]
+
+            model = bulid_model(x_cvtrain, x_validate, y_cvtrain, y_validate, X, X2, X3, CID, fromfile=opts.load)
+
+            Y_de = decode_y(y_validate, features=enc.active_features_)
+            Y_pred = model.predict(x_validate)
+            Y_score = model.predict_proba(x_validate)
+
+            fpr, tpr, thplaceholder  = roc_curve(Y_de,Y_score[:,1])
+            Y_depred = decode_y(Y_pred, features=enc.active_features_)
+
+            accues.append(accuracy_score(Y_depred,Y_de))
+            aucs.append(auc(fpr, tpr))
 
     
-    print("###########################")
-    print(accues)
-    print(aucs)
+        print("###########################")
+        print(accues)
+        print(aucs)
 
 
 
