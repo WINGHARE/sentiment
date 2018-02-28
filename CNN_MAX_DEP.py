@@ -77,8 +77,8 @@ def main():
 
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(testsize=0.2)
 
-    model = md.bulid_model_3conv(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
+    model = md.bulid_model_nconv(
+        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load,n_cov =1)
 
     newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
 

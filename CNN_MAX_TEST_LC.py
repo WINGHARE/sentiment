@@ -192,14 +192,9 @@ def main():
     if (opts.load != 'none'): CID = opts.load
 
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
-        testsize=0)
-
-    X_shape = X_train.shape
-    X_holder = np.zeros(X_shape[0])
+        testsize=0.2)
 
     Y_inv = decode_y(Y_train)
-
-    print(X_shape)
 
     skf = StratifiedKFold(n_splits=10)
     skf.get_n_splits(X_train, Y_inv)

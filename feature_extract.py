@@ -259,7 +259,7 @@ def get_data_pro(testsize=0.4):
     ohenc = OneHotEncoder()
     Y2 = ohenc.fit_transform(Y.reshape(-1, 1)).toarray()
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=testsize)
+    X_train, X_test, Y_train, Y_test = train_test_split(X3, Y2, test_size=testsize,random_state=0)
     return X_train, X_test, Y_train, Y_test, X, X2, X3, ohenc
 
 def main():
