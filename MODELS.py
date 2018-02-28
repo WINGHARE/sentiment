@@ -184,7 +184,6 @@ def bulid_model_nconv(X_train,
         model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
         
     model.add(Flatten())
-    model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
 
