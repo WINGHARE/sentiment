@@ -1,6 +1,7 @@
 # no .a files
 *.sh
 *.con
+*.pyc
  
 # but do track lib.a, even though you're ignoring .a files above
 #!lib.a
