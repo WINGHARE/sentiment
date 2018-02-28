@@ -117,7 +117,6 @@ def bulid_model(X_train,
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
-    model.add(Dense(128, activation='tanh'))
     model.add(Dense(2, activation='softmax'))
 
     if (fromfile == 'none'):
