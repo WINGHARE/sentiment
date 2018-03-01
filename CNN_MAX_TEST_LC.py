@@ -199,8 +199,11 @@ def main():
 
     ranges = np.linspace(.1, 1.0, 10)
 
-    accues = []
-    aucs = []
+    test_accues = []
+    test_aucs = []
+
+    train_accues = []
+    train_aucs = []
 
     for size in ranges:
 
@@ -221,16 +224,29 @@ def main():
         Y_pred = model.predict(X_test)
         Y_score = model.predict_proba(X_test)
 
+        Y_t_pred = model.predict(X_train)
+        Y_t_score = model.predict_proba(X_train)
+
+
         fpr, tpr, thplaceholder  = roc_curve(Y_de_test,Y_score[:,1])
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
 
-        accues.append(accuracy_score(Y_depred,Y_de_test))
-        aucs.append(auc(fpr, tpr))
 
-        print("###########################")
-        print(accues)
-        print(aucs)
-        print(classification_report(Y_de_test, Y_depred))
+        fpr_t, tpr_t, thplaceholder2  = roc_curve(Y_inv,Y_t_score[:,1])
+        Y_t_depred = decode_y(Y_t_pred, features=enc.active_features_)
+
+        test_accues.append(accuracy_score(Y_depred,Y_de_test))
+        test_aucs.append(auc(fpr, tpr))
+
+        train_accues.append(accuracy_score(Y_t_depred,Y_inv))
+        train_aucs.append(auc(fpr_t, tpr_t))
+
+    print("###########################")
+    print(test_accues)
+    print(test_aucs)
+    print(train_accues)
+    print(train_aucs)
+    print(classification_report(Y_de_test, Y_depred))
 
 
     # model, history = bulid_model(
