@@ -221,7 +221,7 @@ def main():
         Y_pred = model.predict(X_test)
         Y_score = model.predict_proba(X_test)
 
-        fpr, tpr, thplaceholder  = roc_curve(Y_inv,Y_score[:,1])
+        fpr, tpr, thplaceholder  = roc_curve(Y_de_test,Y_score[:,1])
         Y_depred = decode_y(Y_pred, features=enc.active_features_)
 
         accues.append(accuracy_score(Y_depred,Y_de_test))
