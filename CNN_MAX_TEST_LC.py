@@ -199,16 +199,19 @@ def main():
 
     for size in ranges:
 
-        x_train, x_placeholder, y_train, yplaceholder = train_test_split(X_train, Y_train, test_size=1-size,random_state=0)
+        x_train, x_test, y_train, y_test = train_test_split(X_train, Y_train, test_size=1-size,random_state=0)
         
-        skf = StratifiedKFold(n_splits=10)
+        #skf = StratifiedKFold(n_splits=10)
 
         y_train_dec = decode_y(y_train)
 
-        skf.get_n_splits(x_train, y_train_dec)
+        model = bulid_model(x_train, x_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
 
-        accues = []
-        aucs = []
+
+        #skf.get_n_splits(x_train, y_train_dec)
+
+        #accues = []
+        #aucs = []
 
         for train_index, validate_index in skf.split(x_train, y_train_dec):
             print("TRAIN:", train_index, "TEST:", validate_index)
