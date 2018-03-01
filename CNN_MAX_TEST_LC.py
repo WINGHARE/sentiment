@@ -193,7 +193,7 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
         testsize=0.2)
 
-    Y_inv = decode_y(Y_train)
+    #Y_inv = decode_y(Y_train)
 
     ranges = np.linspace(.1, 1.0, 10)
 
@@ -210,7 +210,7 @@ def main():
         accues = []
         aucs = []
 
-        for train_index, validate_index in skf.split(X_train, y_train_dec):
+        for train_index, validate_index in skf.split(x_train, y_train_dec):
             print("TRAIN:", train_index, "TEST:", validate_index)
             x_cvtrain, x_validate = x_train[train_index], x_train[validate_index]
             y_cvtrain, y_validate = y_train[train_index], y_train[validate_index]
