@@ -150,7 +150,7 @@ def bulid_model(X_train,
 
         #model.save_weights(
             #filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-        return model
+        return model, history
 
     else:
         filepath = os.path.join('tmp', fromfile)
@@ -213,7 +213,7 @@ def main():
 
         y_train_dec = decode_y(y_train,features=enc.active_features_)
 
-        model = bulid_model(x_train, X_test, y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
+        model,history = bulid_model(x_train, X_test, y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
 
         #skf.get_n_splits(x_train, y_train_dec)
