@@ -191,7 +191,7 @@ def main():
     if (opts.load != 'none'): CID = opts.load
 
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
-        testsize=0.2)
+        testsize=0.4)
 
     Y_inv = decode_y(Y_train)
 
