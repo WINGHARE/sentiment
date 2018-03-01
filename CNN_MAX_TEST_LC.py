@@ -230,6 +230,7 @@ def main():
         print("###########################")
         print(accues)
         print(aucs)
+        print(classification_report(Y_de_test, Y_depred))
 
 
     # model, history = bulid_model(
