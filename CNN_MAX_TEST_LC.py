@@ -193,54 +193,43 @@ def main():
     X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(
         testsize=0.2)
 
-    #Y_inv = decode_y(Y_train)
+    Y_inv = decode_y(Y_train)
+
+    Y_de_test = decode_y(Y_test)
 
     ranges = np.linspace(.1, 1.0, 10)
 
+    accues = []
+    aucs = []
+
     for size in ranges:
 
-        x_train, x_test, y_train, y_test = train_test_split(X_train, Y_train, test_size=1-size,random_state=0)
+        x_train, x_placeholder, y_train, y_placeholder = train_test_split(X_train, Y_train, test_size=1-size,random_state=0)
         
         #skf = StratifiedKFold(n_splits=10)
 
-        y_train_dec = decode_y(y_train)
+        y_train_dec = decode_y(y_train,features=enc.active_features_)
 
-        model = bulid_model(x_train, x_test, y_train, y_test, X, X2, X3, CID, fromfile=opts.load)
+        model = bulid_model(x_train, X_test, y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
 
         #skf.get_n_splits(x_train, y_train_dec)
 
         #accues = []
         #aucs = []
+        
+        Y_pred = model.predict(X_test)
+        Y_score = model.predict_proba(X_test)
 
-        for train_index, validate_index in skf.split(x_train, y_train_dec):
-            print("TRAIN:", train_index, "TEST:", validate_index)
-            x_cvtrain, x_validate = x_train[train_index], x_train[validate_index]
-            y_cvtrain, y_validate = y_train[train_index], y_train[validate_index]
+        fpr, tpr, thplaceholder  = roc_curve(Y_inv,Y_score[:,1])
+        Y_depred = decode_y(Y_pred, features=enc.active_features_)
 
-            model = bulid_model(x_cvtrain, x_validate, y_cvtrain, y_validate, X, X2, X3, CID, fromfile=opts.load)
+        accues.append(accuracy_score(Y_depred,Y_de_test))
+        aucs.append(auc(fpr, tpr))
 
-            Y_de = decode_y(y_validate, features=enc.active_features_)
-            Y_pred = model.predict(x_validate)
-            Y_score = model.predict_proba(x_validate)
-
-            fpr, tpr, thplaceholder  = roc_curve(Y_de,Y_score[:,1])
-            Y_depred = decode_y(Y_pred, features=enc.active_features_)
-
-            accues.append(accuracy_score(Y_depred,Y_de))
-            aucs.append(auc(fpr, tpr))
-
-    
         print("###########################")
         print(accues)
         print(aucs)
-
-
-
-
-
-    
-
 
 
     # model, history = bulid_model(
