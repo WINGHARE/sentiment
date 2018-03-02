@@ -247,9 +247,10 @@ def main():
     print("###########################")
 
     print(history.history['val_acc'])
-    print(test_accues)
+    print(history.history['acc'])
+    #print(test_accues)
     print(test_aucs)
-    print(train_accues)
+    #print(train_accues)
     print(train_aucs)
     print(classification_report(Y_de_test, Y_depred))
 
