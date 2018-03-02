@@ -215,6 +215,7 @@ def main():
 
         model,history = bulid_model(x_train, X_test, y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
+        print()
         print(history.history)
 
 
