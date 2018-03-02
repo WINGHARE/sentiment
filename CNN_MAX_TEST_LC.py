@@ -254,7 +254,7 @@ def main():
     print(classification_report(Y_de_test, Y_depred))
 
     plt.figure()
-    plt.title("Learning cuvre fo the model")
+    plt.title("Learning cuvre to the model")
     plt.xlabel("Trainning sample percentages")
     plt.ylabel("Scores")
 
