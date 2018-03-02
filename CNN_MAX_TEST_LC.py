@@ -201,9 +201,13 @@ def main():
 
     test_accues = []
     test_aucs = []
+    tt_acu_max = []
+    tt_acu_min = []
 
     train_accues = []
     train_aucs = []
+    tn_acu_max = []
+    tn_acu_min = []
 
     for size in ranges:
 
@@ -239,11 +243,17 @@ def main():
         fpr_t, tpr_t, thplaceholder2  = roc_curve(Y_inv,Y_t_score[:,1])
         Y_t_depred = decode_y(Y_t_pred, features=enc.active_features_)
 
-        test_accues.append(history.history['val_acc'])
+        test_accues.append(history.history['val_acc'][-1])
+        tt_acu_max.append(np.max(history.history['val_acc']))
+        tt_acu_min.append(np.min(history.history['val_acc']))
+
+        train_accues.append(history.history['acc'][-1])
+        tn_acu_max.append(np.max(history.history['acc']))
+        tn_acu_min.append(np.min(history.history['acc']))
+
+        train_aucs.append(auc(fpr_t, tpr_t))
         test_aucs.append(auc(fpr, tpr))
 
-        train_accues.append(history.history['acc'])
-        train_aucs.append(auc(fpr_t, tpr_t))
 
     print("###########################")
 
@@ -261,8 +271,13 @@ def main():
     plt.grid()
 
     plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',label="Training accurarcy")
+
+    plt.fill_between(np.linspace(.1, 1.0, 10), tn_acu_min,tn_acu_max, alpha=0.1)
     #plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',label="Training auc")
     plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',label="Testing accurarcy")
+    
+    plt.fill_between(np.linspace(.1, 1.0, 10), tt_acu_min,tt_acu_max, alpha=0.1)
+
     #plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',label="Testing auc")
     plt.legend(loc="best")
 
