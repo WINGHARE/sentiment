@@ -260,10 +260,10 @@ def main():
 
     plt.grid()
 
-    plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',color="r",label="Training accurarcy")
-    plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',color="g",label="Training auc")
-    plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',color="b",label="Testing accurarcy")
-    plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',color="o",label="Testing auc")
+    plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',label="Training accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',label="Training auc")
+    plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',label="Testing accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',label="Testing auc")
     plt.legend(loc="best")
 
     plt.savefig(os.path.join('figures', CID + opts.title + 'learning_curve.svg'),format='svg')
