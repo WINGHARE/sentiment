@@ -253,6 +253,23 @@ def main():
     print(train_aucs)
     print(classification_report(Y_de_test, Y_depred))
 
+    plt.figure()
+    plt.title("Learning cuvre fo the model")
+    plt.xlabel("Trainning sample percentages")
+    plt.ylabel("Scores")
+
+    plt.grid()
+
+    plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',color="r",label="Training accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',color="g",label="Training auc")
+    plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',color="b",label="Testing accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',color="o",label="Testing auc")
+    plt.legend(loc="best")
+
+    plt.savefig(os.path.join('figures', CID + opts.title + 'learning_curve.svg'),format='svg')
+    plt.close()
+
+
 
     # model, history = bulid_model(
     #     X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
