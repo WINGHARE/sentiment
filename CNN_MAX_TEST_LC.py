@@ -260,9 +260,9 @@ def main():
 
     plt.grid()
 
-    plt.plot(np.linspace(.1, 1.0, 10),train_accues[:,-1],'o-',label="Training accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',label="Training accurarcy")
     #plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',label="Training auc")
-    plt.plot(np.linspace(.1, 1.0, 10),test_accues[:,-1],'o-',label="Testing accurarcy")
+    plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',label="Testing accurarcy")
     #plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',label="Testing auc")
     plt.legend(loc="best")
 
