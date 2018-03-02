@@ -239,10 +239,10 @@ def main():
         fpr_t, tpr_t, thplaceholder2  = roc_curve(Y_inv,Y_t_score[:,1])
         Y_t_depred = decode_y(Y_t_pred, features=enc.active_features_)
 
-        test_accues.append(history.history['val_acc'][-1])
+        test_accues.append(history.history['val_acc'])
         test_aucs.append(auc(fpr, tpr))
 
-        train_accues.append(history.history['acc'][-1])
+        train_accues.append(history.history['acc'])
         train_aucs.append(auc(fpr_t, tpr_t))
 
     print("###########################")
@@ -260,10 +260,10 @@ def main():
 
     plt.grid()
 
-    plt.plot(np.linspace(.1, 1.0, 10),train_accues,'o-',label="Training accurarcy")
-    plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',label="Training auc")
-    plt.plot(np.linspace(.1, 1.0, 10),test_accues,'o-',label="Testing accurarcy")
-    plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',label="Testing auc")
+    plt.plot(np.linspace(.1, 1.0, 10),train_accues[:,-1],'o-',label="Training accurarcy")
+    #plt.plot(np.linspace(.1, 1.0, 10),train_aucs,'o-',label="Training auc")
+    plt.plot(np.linspace(.1, 1.0, 10),test_accues[:,-1],'o-',label="Testing accurarcy")
+    #plt.plot(np.linspace(.1, 1.0, 10),test_aucs,'o-',label="Testing auc")
     plt.legend(loc="best")
 
     plt.savefig(os.path.join('figures', CID + opts.title + 'learning_curve.svg'),format='svg')
