@@ -245,6 +245,8 @@ def main():
         train_aucs.append(auc(fpr_t, tpr_t))
 
     print("###########################")
+
+    print(history.history['val_acc'])
     print(test_accues)
     print(test_aucs)
     print(train_accues)
