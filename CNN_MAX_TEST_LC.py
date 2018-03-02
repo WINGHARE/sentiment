@@ -215,8 +215,9 @@ def main():
 
         model,history = bulid_model(x_train, X_test, y_train, Y_test, X, X2, X3, CID, fromfile=opts.load)
 
-        print()
-        print(history.history)
+        print()        
+        print(history.history['val_acc'])
+        print(history.history['acc'])
 
 
         #skf.get_n_splits(x_train, y_train_dec)
@@ -246,8 +247,6 @@ def main():
 
     print("###########################")
 
-    print(history.history['val_acc'])
-    print(history.history['acc'])
     #print(test_accues)
     print(test_aucs)
     #print(train_accues)
