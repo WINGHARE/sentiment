@@ -201,7 +201,7 @@ def bulid_model_nconv(X_train,
             verbose=1,
             save_best_only=True)
 
-        model.fit(
+        history = model.fit(
             X_train,
             Y_train,
             epochs=15,
@@ -210,9 +210,9 @@ def bulid_model_nconv(X_train,
             validation_data=(X_test, Y_test),
             callbacks=[checkpointer])
 
-        model.save_weights(
-            filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
-        return model
+        #model.save_weights(
+            #filepath=os.path.join('tmp', 'weights_' + CID + '.hdf5'))
+        return model,history
 
     else:
         filepath = os.path.join('tmp', fromfile)

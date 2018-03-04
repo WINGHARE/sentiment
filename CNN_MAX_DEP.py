@@ -75,22 +75,31 @@ def main():
 
     if (opts.load != 'none'): CID = opts.load
 
-    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(testsize=0.2)
+    X_train, X_test, Y_train, Y_test, X, X2, X3, enc = f.get_data_pro(testsize=0.4)
 
-    model = md.bulid_model_nconv(
-        X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load,n_cov =1)
 
-    newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+    test_accues = []
 
-    Y_score = model.predict_proba(X_test)
+    for n in range(1,5):
 
-    roc.roc_plot(
-        Y_test, Y_score, 2, filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),fmt='svg',title=opts.title)
+        model,history = md.bulid_model_nconv(
+            X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load,n_cov =n)
+        test_accues.append(history['val_acc'][-1])
+    
+    print(test_accues)
+        
 
-    Y_de = decode_y(Y_test, features=enc.active_features_)
-    Y_pred = model.predict(X_test)
-    Y_depred = decode_y(Y_pred, features=enc.active_features_)
-    print(classification_report(Y_de, Y_depred))
+    # newData = X_test.reshape(X_test.shape[0], 1, 100, 20)
+
+    # Y_score = model.predict_proba(X_test)
+
+    # roc.roc_plot(
+    #     Y_test, Y_score, 2, filepath=os.path.join('figures', CID + opts.title + 'roc.svg'),fmt='svg',title=opts.title)
+
+    # Y_de = decode_y(Y_test, features=enc.active_features_)
+    # Y_pred = model.predict(X_test)
+    # Y_depred = decode_y(Y_pred, features=enc.active_features_)
+    # print(classification_report(Y_de, Y_depred))
 
     return
 
