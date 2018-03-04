@@ -86,6 +86,7 @@ def main():
             X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load,n_cov =n)
         test_accues.append(history.history['val_acc'][-1])
     
+    print()
     print(test_accues)
         
 
