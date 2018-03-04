@@ -84,7 +84,7 @@ def main():
 
         model,history = md.bulid_model_nconv(
             X_train, X_test, Y_train, Y_test, X, X2, X3, CID, fromfile=opts.load,n_cov =n)
-        test_accues.append(history['val_acc'][-1])
+        test_accues.append(history.history['val_acc'][-1])
     
     print(test_accues)
         
