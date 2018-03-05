@@ -265,7 +265,7 @@ def main():
 
     plt.figure()
     plt.title("Learning cuvre to the model")
-    plt.xlabel("Trainning sample percentages")
+    plt.xlabel("Training sample fraction")
     plt.ylabel("Scores")
 
     plt.grid()
