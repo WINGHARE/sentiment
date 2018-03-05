@@ -111,12 +111,13 @@ def main():
 
     print (l.shape)
 
-    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters' + '8401.jpg'))
+    plot_filters(model.layers[0],16,8,filepath=os.path.join('figures', 'filters case' + '8401.jpg'))
 
     tk = get_dict()
     
-    allwords = ' '.join(list(tk.word_index.keys()))
-    
+    #allwords = ' '.join(list(tk.word_index.keys()))
+    allwords ="Not really you voted for him because you re too intellectually lazy to know better"
+
     vec=tk.texts_to_matrix([allwords], mode="tfidf")
 
     vec = vec.reshape(1,100,20,1)
@@ -126,12 +127,12 @@ def main():
     plt.imshow(vec[0,:,:,0])
     plt.show()
 
-    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled_max' + '8401.jpg'))
+    plot_conv(poolresult,16,8,filepath=os.path.join('figures', 'covs_pooled_max case' + '8401.jpg'))
 
     model.pop()
     result = model.predict(vec)
 
-    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs_max' + '8401.jpg'))
+    plot_conv(result,16,8,filepath=os.path.join('figures', 'covs_max case' + '8401.jpg'))
 
 
     return
