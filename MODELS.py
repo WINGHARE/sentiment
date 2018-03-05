@@ -161,7 +161,8 @@ def bulid_model_nconv(X_train,
                 X3,
                 CID,
                 fromfile='none',
-                n_cov = 1):
+                n_cov = 1,
+                n_dense = 1):
     model = Sequential()
     model.add(
         Conv2D(
@@ -182,9 +183,13 @@ def bulid_model_nconv(X_train,
             padding='same',
             activation='relu'))
         model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-        
+
+       
     model.add(Flatten())
     model.add(Dense(256, activation='tanh'))
+
+    for i in range(1,n_dense):
+        model.add(Dense(64, activation='sigmoid'))
     model.add(Dense(2, activation='softmax'))
 
     if (fromfile == 'none'):
